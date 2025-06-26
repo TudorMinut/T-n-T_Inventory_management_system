@@ -1,30 +1,16 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { registerUser, loginUser } from "../controllers/userController";
+import { getRequestBody } from "../utils/requestUtils";
 
 export const handleUserRoutes = async (req: IncomingMessage, res: ServerResponse) => {
-    if (!req.url) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Cerere invalidă" }));
-        return;
-    }
-    const url = new URL(req.url, `http://${req.headers.host}`);
+    const { url, method } = req;
 
-    if (url.pathname === "/register" && req.method === "POST") {
-        let body = "";
-        req.on("data", chunk => (body += chunk));
-        req.on("end", () => {
-            const data = JSON.parse(body);
-            return registerUser(data, res);
-        });
-    } else if (url.pathname === "/login" && req.method === "POST") {
-        let body = "";
-        req.on("data", chunk => (body += chunk));
-        req.on("end", () => {
-            const data = JSON.parse(body);
-            return loginUser(data, res);
-        });
-    } else {
-        res.writeHead(404, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Ruta nu a fost găsită" }));
+    if ((url === "/api/users/register" || url === "/users/register") && method === "POST") {
+        const data = await getRequestBody(req);
+        return registerUser(data, res);
+    }
+    if ((url === "/api/users/login" || url === "/users/login") && method === "POST") {
+        const data = await getRequestBody(req);
+        return loginUser(data, res);
     }
 };

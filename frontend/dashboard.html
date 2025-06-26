@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Gestionare Stocuri</title>
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+
+<body>
+    <button id="logoutBtn">Deconectare</button>
+    <h1>Gestionare Categorii</h1>
+    <form id="categoryForm">
+        <label>Denumire categorie: <input type="text" id="categoryName" required></label><br>
+        <button type="submit">Adaugă categorie</button>
+    </form>
+    <h2>Lista categorii</h2>
+    <ul id="categoriesList"></ul>
+    <hr>
+    <h1>Gestionare Articole</h1>
+    <form id="itemForm">
+        <label>Denumire articol: <input type="text" id="itemName" required></label><br>
+        <label>Categorie:
+            <select id="itemCategory" required></select>
+        </label><br>
+        <label>Cantitate: <input type="number" id="itemQuantity" required></label><br>
+        <label>Prag notificare: <input type="number" id="itemThreshold" value="5" required></label><br>
+        <button type="submit">Adaugă articol</button>
+    </form>
+    <h2>Lista articole</h2>
+    <ul id="itemsList"></ul>
+    <hr>
+    <h1>Notificări</h1>
+    <ul id="notificationsList"></ul>
+    <script>
+        if (!localStorage.getItem('userId')) {
+            window.location.href = '/login.html';
+        }
+        document.getElementById('logoutBtn').onclick = function () {
+            localStorage.removeItem('userId');
+            window.location.href = '/login.html';
+        };
+        async function fetchCategories() {
+            const res = await fetch('/api/categories');
+            const categories = await res.json();
+            const list = document.getElementById('categoriesList');
+            const select = document.getElementById('itemCategory');
+            list.innerHTML = '';
+            select.innerHTML = '';
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.textContent = `${category.id}: ${category.name}`;
+                list.appendChild(li);
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                select.appendChild(option);
+            });
+        }
+        document.getElementById('categoryForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('categoryName').value;
+            await fetch('/api/categories', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            document.getElementById('categoryForm').reset();
+            fetchCategories();
+        };
+        async function fetchItems() {
+            const res = await fetch('/api/items');
+            const items = await res.json();
+            const list = document.getElementById('itemsList');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} (Categorie: ${item.category_id}, Cant: ${item.quantity}, Prag: ${item.notification_threshold}) `;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Șterge';
+                deleteButton.onclick = async () => {
+                    await fetch(`/api/items/${item.id}`, { method: 'DELETE' });
+                    fetchItems();
+                };
+                li.appendChild(deleteButton);
+                list.appendChild(li);
+            });
+        }
+        document.getElementById('itemForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('itemName').value;
+            const category_id = document.getElementById('itemCategory').value;
+            const quantity = document.getElementById('itemQuantity').value;
+            const notification_threshold = document.getElementById('itemThreshold').value;
+            await fetch('/api/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, category_id, quantity, notification_threshold })
+            });
+            document.getElementById('itemForm').reset();
+            fetchItems();
+        };
+        async function fetchNotifications() {
+            try {
+                const res = await fetch('/api/notifications');
+                if (!res.ok) throw new Error('Nu am putut prelua notificările');
+                const notifications = await res.json();
+                const list = document.getElementById('notificationsList');
+                list.innerHTML = '';
+                notifications.forEach(notif => {
+                    const li = document.createElement('li');
+                    li.textContent = `[${new Date(notif.created_at).toLocaleString()}] ${notif.message}`;
+                    list.appendChild(li);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchCategories();
+        fetchItems();
+        fetchNotifications();
+        setInterval(fetchNotifications, 15000);
+    </script>
+</body>
+
+</html>
