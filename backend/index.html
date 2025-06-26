@@ -24,10 +24,24 @@
 
     <hr>
 
+    <h1>Gestionare Categorii</h1>
+    <form id="categoryForm">
+        <label>Denumire categorie: <input type="text" id="categoryName" required></label><br>
+        <button type="submit">Adaugă categorie</button>
+    </form>
+    <h2>Lista categorii</h2>
+    <ul id="categoriesList"></ul>
+
+    <hr>
+
     <h1>Gestionare Articole și Consumabile</h1>
     <form id="itemForm">
         <label>Denumire articol: <input type="text" id="itemName" required></label><br>
-        <label>Categorie: <input type="text" id="itemCategory" required></label><br>
+        <label>Categorie:
+            <select id="itemCategory" required>
+                <!-- Categoriile vor fi încărcate aici -->
+            </select>
+        </label><br>
         <button type="submit">Adaugă articol</button>
     </form>
     <h2>Lista articole</h2>
@@ -39,13 +53,11 @@
             const username = document.getElementById('regUsername').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
-            const res = await fetch('http://localhost:3000/users/register', {
+            await fetch('http://localhost:3000/users/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password })
             });
-            const result = await res.json();
-            alert(result.message || `Utilizator ${result.username} înregistrat!`);
             document.getElementById('registerForm').reset();
         };
 
@@ -53,21 +65,47 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            const res = await fetch('http://localhost:3000/users/login', {
+            await fetch('http://localhost:3000/users/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
-            const result = await res.json();
-            alert(result.message);
-            if (res.ok) {
-                // Aici se poate salva un token sau seta o stare de autentificare
-            }
             document.getElementById('loginForm').reset();
         };
 
+        // Script pentru categorii
+        async function fetchCategories() {
+            const res = await fetch('http://localhost:3000/categories');
+            const categories = await res.json();
+            const list = document.getElementById('categoriesList');
+            const select = document.getElementById('itemCategory');
+            list.innerHTML = '';
+            select.innerHTML = '';
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                li.textContent = `${category.id}: ${category.name}`;
+                list.appendChild(li);
 
-        // Script existent pentru articole
+                const option = document.createElement('option');
+                option.value = category.name;
+                option.textContent = category.name;
+                select.appendChild(option);
+            });
+        }
+
+        document.getElementById('categoryForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('categoryName').value;
+            await fetch('http://localhost:3000/categories', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            document.getElementById('categoryForm').reset();
+            fetchCategories();
+        };
+
+        // Script pentru articole
         async function fetchItems() {
             const res = await fetch('http://localhost:3000/items');
             const items = await res.json();
@@ -75,10 +113,20 @@
             list.innerHTML = '';
             items.forEach(item => {
                 const li = document.createElement('li');
-                li.textContent = `${item.id}: ${item.name} (Categorie: ${item.category})`;
+                li.textContent = `${item.id}: ${item.name} (Categorie: ${item.category}) `;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Șterge';
+                deleteButton.onclick = async () => {
+                    await fetch(`http://localhost:3000/items/${item.id}`, { method: 'DELETE' });
+                    fetchItems();
+                };
+                li.appendChild(deleteButton);
+
                 list.appendChild(li);
             });
         }
+
         document.getElementById('itemForm').onsubmit = async function (e) {
             e.preventDefault();
             const name = document.getElementById('itemName').value;
@@ -91,6 +139,9 @@
             document.getElementById('itemForm').reset();
             fetchItems();
         };
+
+        // Inițializare
+        fetchCategories();
         fetchItems();
     </script>
 </body>
