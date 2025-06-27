@@ -48,9 +48,9 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     const { url, method } = req;
 
-    // Fix the frontend path resolution
+    // Fix the frontend path resolution for Render deployment
     const frontendPath = process.env.NODE_ENV === 'production'
-        ? path.join(__dirname, "..", "..", "..", "frontend")
+        ? path.join(__dirname, "..", "frontend")  // Correct path: Go up from 'routes' to 'dist', then find 'frontend'
         : path.join(__dirname, "..", "..", "..", "frontend");
 
     // Serve login.html
@@ -110,7 +110,9 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     // Serve static files (CSS, JS, etc.)
     if (url?.startsWith("/public/")) {
-        const filePath = path.join(frontendPath, url);
+        // Remove the leading slash from the URL to make it a relative path
+        const relativeUrl = url.substring(1);
+        const filePath = path.join(frontendPath, relativeUrl);
         const ext = path.extname(filePath);
         const contentTypes: { [key: string]: string } = {
             ".css": "text/css",
