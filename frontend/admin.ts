@@ -1,6 +1,6 @@
 import { handleLogout } from "./auth";
 
-if (!localStorage.getItem('userId') || !localStorage.getItem('isAdmin')) {
+if (!localStorage.getItem('userId') || localStorage.getItem('isAdmin') !== 'true') {
     window.location.href = '/';
 }
 
@@ -13,6 +13,12 @@ async function fetchUsers() {
     if (!tbody) return;
 
     tbody.innerHTML = '';
+    if (users.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="5">Nu există utilizatori în sistem.</td>';
+        tbody.appendChild(tr);
+        return;
+    }
     users.forEach((user: { id: any; username: any; email: any; role: any; }) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td>${user.role}</td>`;
@@ -41,3 +47,24 @@ async function fetchUsers() {
 }
 
 fetchUsers();
+
+// Fetch and display categories for admin
+async function fetchAdminCategories() {
+    const res = await fetch('/api/categories');
+    const categories = await res.json();
+    const ul = document.getElementById('adminCategoriesList');
+    if (!ul) return;
+    ul.innerHTML = categories.map((cat: any) => `<li>${cat.id}: ${cat.name}</li>`).join('');
+}
+
+// Fetch and display items for admin
+async function fetchAdminItems() {
+    const res = await fetch('/api/items');
+    const items = await res.json();
+    const ul = document.getElementById('adminItemsList');
+    if (!ul) return;
+    ul.innerHTML = items.map((item: any) => `<li>${item.id}: ${item.name} (Categorie: ${item.category_name || 'Necategorizat'}, Cantitate: ${item.quantity})</li>`).join('');
+}
+
+fetchAdminCategories();
+fetchAdminItems();

@@ -1,6 +1,10 @@
 // Verificare autentificare și inițializare
 if (!localStorage.getItem('userId')) window.location.href = '/';
-if (localStorage.getItem('isAdmin')) document.getElementById('adminBtn')?.setAttribute('style', 'display:inline-block');
+if (localStorage.getItem('isAdmin') === 'true') {
+    document.getElementById('adminBtn')?.setAttribute('style', 'display:inline-block');
+} else {
+    document.getElementById('adminBtn')?.setAttribute('style', 'display:none');
+}
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
