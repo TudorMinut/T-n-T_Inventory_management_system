@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Documentație - Gestionare Stocuri</title>
+    <link rel="stylesheet" href="/public/css/base.css">
+    <link rel="stylesheet" href="/public/css/documentation.css">
+</head>
+
+<body>
+    <!-- Header Principal -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1>📚 Documentația Sistemului</h1>
+                <p>Ghid complet de utilizare pentru Gestionare Stocuri</p>
+            </div>
+            <nav class="header-nav">
+                <button onclick="window.location.href='/dashboard.html'" class="btn-primary">🏠 Înapoi la
+                    Dashboard</button>
+                <button onclick="window.location.href='/statistics'" class="btn-primary">📊 Statistici</button>
+                <button id="logoutBtn" class="btn-danger">🚪 Deconectare</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conținut Principal -->
+    <main class="main-content">
+        <div class="doc-content">
+            <a href="/dashboard.html" class="back-btn">← Înapoi la Dashboard</a>
+
+            <div class="doc-section">
+                <h2>🎯 Prezentare Generală</h2>
+                <p>Sistemul de Gestionare a Stocurilor este o aplicație web modernă, dezvoltată pentru a facilita
+                    managementul eficient al inventarului. Aplicația oferă o interfață intuitivă pentru gestionarea
+                    articolelor, categoriilor și notificărilor automatizate.</p>
+            </div>
+
+            <div class="doc-section">
+                <h2>🚀 Funcționalități Principale</h2>
+                <ul class="feature-list">
+                    <li><strong>Gestionare Articole:</strong> Adăugare, editare, ștergere și vizualizare articole cu
+                        sortare avansată</li>
+                    <li><strong>Gestionare Categorii:</strong> Organizarea articolelor în categorii personalizate</li>
+                    <li><strong>Notificări Inteligente:</strong> Alerte automate pentru stocuri mici și notificări
+                        personalizate</li>
+                    <li><strong>Import/Export Date:</strong> Suport pentru formatele CSV, JSON și XML</li>
+                    <li><strong>Statistici Avansate:</strong> Rapoarte detaliate în format HTML și PDF</li>
+                    <li><strong>Panou de Administrare:</strong> Gestionarea utilizatorilor și setărilor sistem</li>
+                    <li><strong>Interfață Responsivă:</strong> Optimizată pentru desktop și dispozitive mobile</li>
+                </ul>
+            </div>
+
+            <div class="doc-section">
+                <h2>📋 Ghid de Utilizare</h2>
+
+                <h3>1. Autentificare</h3>
+                <p>Pentru a accesa sistemul, introduceți datele de autentificare în pagina de login. Administratorii pot
+                    crea conturi noi prin panoul de administrare.</p>
+
+                <h3>2. Gestionarea Categoriilor</h3>
+                <p>Înainte de a adăuga articole, creați categoriile necesare:</p>
+                <ul>
+                    <li>Introduceți numele categoriei în câmpul dedicat</li>
+                    <li>Apăsați "Adăugă categorie"</li>
+                    <li>Categoriile pot fi editate sau șterse (articolele vor fi mutate în "Necategorizate")</li>
+                </ul>
+
+                <h3>3. Adăugarea Articolelor</h3>
+                <p>Pentru a adăuga un articol nou:</p>
+                <ul>
+                    <li>Completați denumirea articolului</li>
+                    <li>Selectați categoria corespunzătoare</li>
+                    <li>Setați cantitatea inițială și pragul de notificare</li>
+                    <li>Opțional: Configurați notificări personalizate</li>
+                </ul>
+
+                <h3>4. Sortarea și Filtrarea</h3>
+                <p>Articolele pot fi sortate după:</p>
+                <ul>
+                    <li>Nume (alfabetic)</li>
+                    <li>Cantitate (numeric)</li>
+                    <li>Categorie (alfabetic)</li>
+                    <li>Data adăugării (cronologic)</li>
+                </ul>
+
+                <h3>5. Notificări Personalizate</h3>
+                <p>Sistemul oferă trei tipuri de notificări:</p>
+                <ul>
+                    <li><strong>După timp:</strong> Notificare după un număr specificat de minute</li>
+                    <li><strong>Periodică:</strong> Notificări repetate la un interval regulat</li>
+                    <li><strong>Dată fixă:</strong> Notificare la o dată și oră precise</li>
+                </ul>
+            </div>
+
+            <div class="doc-section">
+                <h2>⚙️ Tehnologii Utilizate</h2>
+                <div class="code-block">
+                    Backend: TypeScript + Node.js HTTP nativ
+                    Frontend: HTML5 + CSS3 + JavaScript/TypeScript
+                    Baza de Date: PostgreSQL
+                    Securitate: bcrypt, validări anti-XSS/SQLi
+                    Export: CSV, JSON, XML, PDF
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🔧 Funcții Avansate</h2>
+
+                <h3>Import/Export Date</h3>
+                <p>Accesați funcțiile de import/export prin panoul de administrare pentru a:</p>
+                <ul>
+                    <li>Exporta toate datele în formatele CSV, JSON sau XML</li>
+                    <li>Importa articole din fișiere externe</li>
+                    <li>Genera rapoarte PDF cu statistici detaliate</li>
+                </ul>
+
+                <h3>Statistici și Rapoarte</h3>
+                <p>Vizualizați statistici comprehensive despre:</p>
+                <ul>
+                    <li>Numărul total de articole și categorii</li>
+                    <li>Distribuția articolelor pe categorii</li>
+                    <li>Articole cu stoc redus</li>
+                    <li>Tendințe și analize temporale</li>
+                </ul>
+            </div>
+
+            <div class="doc-section">
+                <h2>🔒 Securitate și Confidențialitate</h2>
+                <p>Aplicația implementează multiple măsuri de securitate:</p>
+                <ul>
+                    <li>Autentificare securizată cu hash-uri bcrypt</li>
+                    <li>Protecție împotriva atacurilor XSS și SQL Injection</li>
+                    <li>Validarea și sanitizarea tuturor datelor de intrare</li>
+                    <li>Headers de securitate HTTP configurate corespunzător</li>
+                    <li>Gestionarea sesiunilor și controlul accesului bazat pe roluri</li>
+                </ul>
+            </div>
+
+            <div class="doc-section">
+                <h2>📞 Suport și Asistență</h2>
+                <p>Pentru probleme tehnice sau întrebări suplimentare:</p>
+                <ul>
+                    <li>Consultați această documentație pentru informații detaliate</li>
+                    <li>Verificați panoul de notificări pentru alerte sistem</li>
+                    <li>Administratorii pot accesa panoul de administrare pentru setări avansate</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>📋 Despre Aplicație</h3>
+                <p>Sistem complet de gestionare a stocurilor și inventarului.</p>
+                <p>Dezvoltat cu TypeScript și tehnologii moderne.</p>
+            </div>
+            <div class="footer-section">
+                <h3>🔧 Funcționalități</h3>
+                <p>• Gestionare articole și categorii</p>
+                <p>• Notificări automatizate</p>
+                <p>• Import/Export date</p>
+                <p>• Statistici detaliate</p>
+            </div>
+            <div class="footer-section">
+                <h3>📖 Navigare</h3>
+                <a href="/dashboard.html" class="documentation-btn">🏠 Dashboard</a>
+                <a href="/statistics" class="documentation-btn">📊 Statistici</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Gestionare Stocuri. Toate drepturile rezervate.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Verificare autentificare
+        if (!localStorage.getItem('userId')) {
+            window.location.href = '/login.html';
+        }
+
+        // Buton deconectare
+        document.getElementById('logoutBtn').onclick = function () {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('isAdmin');
+            window.location.href = '/login.html';
+        };
+    </script>
+</body>
+
+</html>
