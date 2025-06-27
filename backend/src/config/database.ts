@@ -1,13 +1,8 @@
 import { Pool } from 'pg';
 
-// Aici va fi configurată conexiunea la baza de date PostgreSQL.
-
 const pool = new Pool({
-    user: 'postgres', // înlocuiți cu utilizatorul dumneavoastră
-    host: 'localhost',
-    database: 'tnt_db', // înlocuiți cu numele bazei de date
-    password: 'admin', // înlocuiți cu parola dumneavoastră
-    port: 5432,
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:admin@localhost:5432/tnt_db',
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 export default pool;
