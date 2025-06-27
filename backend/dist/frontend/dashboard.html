@@ -37,7 +37,9 @@
         <h1>Gestionare Articole</h1>
         <form id="itemForm">
             <label>Denumire articol: <input type="text" id="itemName" required></label>
-            <label>Categorie: <select id="itemCategory" required></select></label>
+            <label>Categorie: <select id="itemCategory" required>
+                    <option value="" disabled selected>Selectează o categorie</option>
+                </select></label>
             <label>Cantitate: <input type="number" id="itemQuantity" required></label>
             <label>Prag notificare: <input type="number" id="itemThreshold" value="5" required></label>
 

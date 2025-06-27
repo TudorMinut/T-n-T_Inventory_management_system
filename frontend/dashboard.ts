@@ -1,10 +1,16 @@
 // Verificare autentificare și inițializare
 if (!localStorage.getItem('userId')) window.location.href = '/';
-if (localStorage.getItem('isAdmin') === 'true') {
-    document.getElementById('adminBtn')?.setAttribute('style', 'display:inline-block');
-} else {
-    document.getElementById('adminBtn')?.setAttribute('style', 'display:none');
+
+// Afișează butonul admin doar pentru utilizatorii cu rol de admin
+const adminBtn = document.getElementById('adminBtn');
+if (adminBtn) {
+    if (localStorage.getItem('isAdmin') === 'true') {
+        adminBtn.style.display = 'inline-block';
+    } else {
+        adminBtn.style.display = 'none';
+    }
 }
+
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
