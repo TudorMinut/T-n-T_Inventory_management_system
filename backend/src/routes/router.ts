@@ -110,7 +110,9 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     // Serve static files (CSS, JS, etc.)
     if (url?.startsWith("/public/")) {
-        const filePath = path.join(frontendPath, url);
+        // Remove the leading slash from the URL to make it a relative path
+        const relativeUrl = url.substring(1);
+        const filePath = path.join(frontendPath, relativeUrl);
         const ext = path.extname(filePath);
         const contentTypes: { [key: string]: string } = {
             ".css": "text/css",
