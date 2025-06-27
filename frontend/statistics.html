@@ -17,8 +17,8 @@
                 <p>Rapoarte și analize detaliate</p>
             </div>
             <nav class="header-nav">
-                <button onclick="window.location.href='/dashboard.html'" class="btn-primary">Dashboard</button>
-                <button onclick="window.location.href='/documentation'" class="btn-primary">Documentație</button>
+                <button id="dashboardBtn" class="btn-primary">Dashboard</button>
+                <button id="docsBtn" class="btn-primary">Documentație</button>
                 <button id="logoutBtn" class="btn-danger">Deconectare</button>
             </nav>
         </div>
@@ -30,16 +30,16 @@
         <div class="section">
             <h2>Statistici</h2>
             <div class="button-group">
-                <button onclick="window.open('/api/statistics/html','_blank')">Vezi Statistici HTML</button>
-                <button onclick="window.open('/api/statistics/pdf','_blank')">Descarca Statistici PDF</button>
+                <button id="viewStatsHtmlBtn">Vezi Statistici HTML</button>
+                <button id="downloadStatsPdfBtn">Descarca Statistici PDF</button>
             </div>
         </div>
         <div class="section">
             <h2>Export Date</h2>
             <div class="button-group">
-                <button onclick="window.location.href='/api/data/export/csv'">Export CSV</button>
-                <button onclick="window.location.href='/api/data/export/json'">Export JSON</button>
-                <button onclick="window.location.href='/api/data/export/xml'">Export XML</button>
+                <button id="exportCsvBtn">Export CSV</button>
+                <button id="exportJsonBtn">Export JSON</button>
+                <button id="exportXmlBtn">Export XML</button>
             </div>
         </div>
         <div class="section">
@@ -61,59 +61,7 @@
             </form>
         </div>
         <div id="feedback" class="feedback"></div>
-        <script>
-            function showFeedback(message, type = 'info') {
-                const feedback = document.getElementById('feedback');
-                feedback.textContent = message;
-                feedback.className = `feedback ${type}`;
-                setTimeout(() => { feedback.textContent = ''; feedback.className = 'feedback'; }, 5000);
-            }
-            document.getElementById('importCsvForm').onsubmit = async function (e) {
-                e.preventDefault();
-                const fileInput = document.getElementById('csvFile');
-                const file = fileInput.files[0];
-                if (!file) { showFeedback('Te rugam sa selectezi un fisier CSV.', 'error'); return; }
-                try {
-                    const text = await file.text();
-                    const response = await fetch('/api/data/import/csv', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: text });
-                    if (response.ok) { showFeedback('Import CSV finalizat cu succes!', 'success'); fileInput.value = ''; } else { showFeedback('Eroare la importul CSV.', 'error'); }
-                } catch (error) { showFeedback('Eroare la citirea fisierului CSV.', 'error'); }
-            };
-            document.getElementById('importJsonForm').onsubmit = async function (e) {
-                e.preventDefault();
-                const fileInput = document.getElementById('jsonFile');
-                const file = fileInput.files[0];
-                if (!file) { showFeedback('Te rugam sa selectezi un fisier JSON.', 'error'); return; }
-                try {
-                    const text = await file.text();
-                    const response = await fetch('/api/data/import/json', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: text });
-                    if (response.ok) { showFeedback('Import JSON finalizat cu succes!', 'success'); fileInput.value = ''; } else { showFeedback('Eroare la importul JSON.', 'error'); }
-                } catch (error) { showFeedback('Eroare la citirea fisierului JSON.', 'error'); }
-            };
-            document.getElementById('importXmlForm').onsubmit = async function (e) {
-                e.preventDefault();
-                const fileInput = document.getElementById('xmlFile');
-                const file = fileInput.files[0];
-                if (!file) { showFeedback('Te rugam sa selectezi un fisier XML.', 'error'); return; }
-                try {
-                    const text = await file.text();
-                    const response = await fetch('/api/data/import/xml', { method: 'POST', headers: { 'Content-Type': 'application/xml' }, body: text });
-                    if (response.ok) { showFeedback('Import XML finalizat cu succes!', 'success'); fileInput.value = ''; } else { showFeedback('Eroare la importul XML.', 'error'); }
-                } catch (error) { showFeedback('Eroare la citirea fisierului XML.', 'error'); }
-            };
-
-            // Verificare autentificare și logout
-            if (!localStorage.getItem('userId')) {
-                window.location.href = '/login.html';
-            }
-
-            document.getElementById('logoutBtn').onclick = function () {
-                localStorage.removeItem('userId');
-                localStorage.removeItem('isAdmin');
-                window.location.href = '/login.html';
-            };
-        </script>
-
+        <script src="/public/js/statistics.js"></script>
     </main>
 
     <!-- Footer -->
