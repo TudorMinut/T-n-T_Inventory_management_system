@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import pool from "../config/database";
 import { getRequestBody } from '../utils/requestUtils';
 import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeInteger } from '../utils/securityUtils';
+import { createAndSendStockNotification } from '../services/instantNotificationService';
 
 // Funcție pentru programarea notificărilor personalizate
 const scheduleCustomNotification = async (item: any) => {
@@ -166,6 +167,10 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
         if (custom_notification_enabled) {
             await scheduleCustomNotification(newItem);
         }
+        // Notificare instant dacă deja la creare cantitatea e sub prag
+        if (quantity <= notification_threshold) {
+            await createAndSendStockNotification(newItem);
+        }
 
         // Returnează articolul nou creat cu numele categoriei
         const finalItemResult = await pool.query(
@@ -315,9 +320,15 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
                  WHERE i.id = $1`,
                 [id]
             );
+            const updatedItem = finalItemResult.rows[0];
+
+            // Verifică și trimite notificare instant dacă e cazul
+            if (body.quantity !== undefined && updatedItem.quantity <= updatedItem.notification_threshold) {
+                await createAndSendStockNotification(updatedItem);
+            }
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(finalItemResult.rows[0]));
+            res.end(JSON.stringify(updatedItem));
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: "Articolul nu a fost găsit" }));

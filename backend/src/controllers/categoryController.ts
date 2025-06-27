@@ -28,9 +28,20 @@ export const createCategory = async (req: IncomingMessage, res: ServerResponse) 
             return;
         }
 
+        // Găsește cel mai mic id liber
+        const idResult = await pool.query('SELECT id FROM categories ORDER BY id ASC');
+        let newId = 1;
+        for (const row of idResult.rows) {
+            if (row.id === newId) {
+                newId++;
+            } else {
+                break;
+            }
+        }
+
         const result = await pool.query(
-            'INSERT INTO categories (name) VALUES ($1) RETURNING *',
-            [sanitizedName]
+            'INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING *',
+            [newId, sanitizedName]
         );
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result.rows[0]));

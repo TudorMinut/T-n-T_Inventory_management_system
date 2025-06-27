@@ -7,6 +7,7 @@ exports.deleteItem = exports.updateItem = exports.createItem = exports.getAllIte
 const database_1 = __importDefault(require("../config/database"));
 const requestUtils_1 = require("../utils/requestUtils");
 const securityUtils_1 = require("../utils/securityUtils");
+const instantNotificationService_1 = require("../services/instantNotificationService");
 const scheduleCustomNotification = async (item) => {
     try {
         let scheduledTime = null;
@@ -144,6 +145,9 @@ const createItem = async (req, res) => {
         if (custom_notification_enabled) {
             await scheduleCustomNotification(newItem);
         }
+        if (quantity <= notification_threshold) {
+            await (0, instantNotificationService_1.createAndSendStockNotification)(newItem);
+        }
         const finalItemResult = await database_1.default.query(`SELECT 
                 i.id, i.name, i.quantity, i.category_id, c.name as category_name,
                 i.notification_threshold, i.custom_notification_enabled, i.notification_type,
@@ -252,8 +256,12 @@ const updateItem = async (req, res, id) => {
                  FROM items i
                  LEFT JOIN categories c ON i.category_id = c.id
                  WHERE i.id = $1`, [id]);
+            const updatedItem = finalItemResult.rows[0];
+            if (body.quantity !== undefined && updatedItem.quantity <= updatedItem.notification_threshold) {
+                await (0, instantNotificationService_1.createAndSendStockNotification)(updatedItem);
+            }
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(finalItemResult.rows[0]));
+            res.end(JSON.stringify(updatedItem));
         }
         else {
             res.writeHead(404, { 'Content-Type': 'application/json' });

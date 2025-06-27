@@ -5,6 +5,7 @@ import { handleNotificationRoutes } from "./notificationRoutes";
 import { handleUserRoutes } from "./userRoutes";
 import { handleStatisticsRoutes } from "./statisticsRouteHttp";
 import { handleDataRoutes } from "./dataRouteHttp";
+import { handleManualNotificationRoute } from "./manualNotificationRoute";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -106,6 +107,9 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
     }
     if (url?.startsWith("/api/data")) {
         return handleDataRoutes(req, res);
+    }
+    if (url?.startsWith("/api/manual-notification")) {
+        return handleManualNotificationRoute(req, res);
     }
 
     // Serve static files (CSS, JS, etc.)

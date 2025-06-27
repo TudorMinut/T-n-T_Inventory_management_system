@@ -36,24 +36,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer = __importStar(require("nodemailer"));
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: Number(process.env.SMTP_PORT) === 465,
     auth: {
-        user: 'adolph.weber@ethereal.email',
-        pass: 'gZTrsP9zN9sA5Yn4n2'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
     }
 });
 const sendEmail = async (to, subject, text, html) => {
     try {
         const info = await transporter.sendMail({
-            from: '"Manager de Stoc" <no-reply@example.com>',
+            from: `"Manager de Stoc" <${process.env.SMTP_FROM_EMAIL}>`,
             to,
             subject,
             text,
             html,
         });
         console.log('Email trimis: %s', info.messageId);
-        console.log('Previzualizează URL: %s', nodemailer.getTestMessageUrl(info));
     }
     catch (error) {
         console.error('Eroare la trimiterea emailului:', error);

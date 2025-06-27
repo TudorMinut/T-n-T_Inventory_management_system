@@ -30,7 +30,17 @@ const createCategory = async (req, res) => {
             res.end(JSON.stringify({ message: "Numele categoriei trebuie să aibă între 2-100 caractere" }));
             return;
         }
-        const result = await database_1.default.query('INSERT INTO categories (name) VALUES ($1) RETURNING *', [sanitizedName]);
+        const idResult = await database_1.default.query('SELECT id FROM categories ORDER BY id ASC');
+        let newId = 1;
+        for (const row of idResult.rows) {
+            if (row.id === newId) {
+                newId++;
+            }
+            else {
+                break;
+            }
+        }
+        const result = await database_1.default.query('INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING *', [newId, sanitizedName]);
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result.rows[0]));
     }
