@@ -6,8 +6,8 @@ import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeIn
 // Funcție pentru programarea notificărilor personalizate
 const scheduleCustomNotification = async (item: any) => {
     try {
-        let scheduledTime = null;
-        let nextNotification = null;
+        let scheduledTime: Date | null = null;
+        let nextNotification: Date | null = null;
         let message = item.notification_message || `Notificare pentru articolul: ${item.name}`;
 
         const now = new Date();
@@ -105,10 +105,10 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
         }
 
         // Validări pentru notificările personalizate
-        let validatedNotificationType = null;
-        let validatedAfterMinutes = null;
-        let validatedIntervalMinutes = null;
-        let validatedFixedDate = null;
+        let validatedNotificationType: string | null = null;
+        let validatedAfterMinutes: number | null = null;
+        let validatedIntervalMinutes: number | null = null;
+        let validatedFixedDate: string | null = null;
 
         if (custom_notification_enabled) {
             if (notification_type === 'after_time' && validatePositiveInteger(notification_after_minutes)) {
