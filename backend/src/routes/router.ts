@@ -1,44 +1,44 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { handleItemsRoutes } from "./itemsRoute";
-import { handleUserRoutes } from "./userRoutes";
 import { handleCategoriesRoutes } from "./categoriesRoute";
+import { handleItemsRoutes } from "./itemsRoute";
 import { handleNotificationRoutes } from "./notificationRoutes";
-import { handleDataRoutes } from "./dataRouteHttp";
+import { handleUserRoutes } from "./userRoutes";
 import { handleStatisticsRoutes } from "./statisticsRouteHttp";
+import { handleDataRoutes } from "./dataRouteHttp";
 import * as fs from "fs";
 import * as path from "path";
 
-const serveStaticFile = (filePath: string, contentType: string, res: ServerResponse) => {
+function serveStaticFile(filePath: string, contentType: string, res: ServerResponse) {
     fs.readFile(filePath, (err, data) => {
         if (err) {
-            console.error("Eroare citire fișier:", err);
-            res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Eroare internă a serverului" }));
+            console.error("Eroare citire fișier static:", err);
+            res.writeHead(404, { "Content-Type": "text/plain" });
+            res.end("Not found");
             return;
         }
         res.writeHead(200, { "Content-Type": contentType });
         res.end(data);
     });
-};
+}
 
 export const router = (req: IncomingMessage, res: ServerResponse) => {
-    // CORS configurabil pentru siguranță
+    // CORS and security headers
     const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://yourdomain.com'] // Înlocuiește cu domeniul tău în producție
+        ? ['https://yourdomain.com']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin || '')) {
         res.setHeader('Access-Control-Allow-Origin', origin || '*');
     } else if (process.env.NODE_ENV !== 'production') {
-        res.setHeader('Access-Control-Allow-Origin', '*'); // Doar pentru dezvoltare
+        res.setHeader('Access-Control-Allow-Origin', '*');
     }
 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('X-Content-Type-Options', 'nosniff'); // Previne MIME type sniffing
-    res.setHeader('X-Frame-Options', 'DENY'); // Previne clickjacking
-    res.setHeader('X-XSS-Protection', '1; mode=block'); // Activează XSS protection
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
@@ -48,92 +48,93 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     const { url, method } = req;
 
-    // Servește login.html
+    // Fix the frontend path resolution
+    const frontendPath = process.env.NODE_ENV === 'production'
+        ? path.join(__dirname, "..", "..", "..", "frontend")
+        : path.join(__dirname, "..", "..", "..", "frontend");
+
+    // Serve login.html
     if ((url === "/" || url === "/login.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "login.html");
+        const filePath = path.join(frontendPath, "login.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
 
-    // Servește dashboard.html
+    // Serve dashboard.html
     if ((url === "/dashboard" || url === "/dashboard.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "dashboard.html");
+        const filePath = path.join(frontendPath, "dashboard.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
 
-    // Servește admin.html
+    // Serve admin.html
     if (url === "/admin" && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "admin.html");
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Eroare internă a serverului" }));
-                return;
-            }
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(data);
-        });
+        const filePath = path.join(frontendPath, "admin.html");
+        serveStaticFile(filePath, "text/html", res);
         return;
     }
 
-    if (url?.startsWith("/api/items")) {
-        return handleItemsRoutes(req, res);
+    // Serve statistics.html
+    if ((url === "/statistics" || url === "/statistics.html") && method === "GET") {
+        const filePath = path.join(frontendPath, "statistics.html");
+        serveStaticFile(filePath, "text/html", res);
+        return;
     }
-    if (url?.startsWith("/api/users") || url?.startsWith("/users")) {
-        return handleUserRoutes(req, res);
+
+    // Serve documentation.html
+    if ((url === "/documentation" || url === "/documentation.html") && method === "GET") {
+        const filePath = path.join(frontendPath, "documentation.html");
+        serveStaticFile(filePath, "text/html", res);
+        return;
     }
+
+    // API Routes
     if (url?.startsWith("/api/categories")) {
         return handleCategoriesRoutes(req, res);
+    }
+    if (url?.startsWith("/api/items")) {
+        return handleItemsRoutes(req, res);
     }
     if (url?.startsWith("/api/notifications")) {
         return handleNotificationRoutes(req, res);
     }
-    if (url?.startsWith("/api/data")) {
-        return handleDataRoutes(req, res);
+    if (url?.startsWith("/api/users") || url?.startsWith("/users")) {
+        return handleUserRoutes(req, res);
     }
     if (url?.startsWith("/api/statistics")) {
         return handleStatisticsRoutes(req, res);
     }
-    // Servește statistics.html
-    if ((url === "/statistics" || url === "/statistics.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "statistics.html");
-        serveStaticFile(filePath, "text/html", res);
-        return;
+    if (url?.startsWith("/api/data")) {
+        return handleDataRoutes(req, res);
     }
 
-    // Servește documentation.html
-    if ((url === "/documentation" || url === "/documentation.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "documentation.html");
-        serveStaticFile(filePath, "text/html", res);
-        return;
-    }
-
-    // Servește fișiere statice (ex: CSS, JS, TS)
+    // Serve static files (CSS, JS, etc.)
     if (url?.startsWith("/public/")) {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", url);
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                console.error("Eroare citire fișier static:", err);
-                res.writeHead(404, { "Content-Type": "text/plain" });
-                res.end("Not found");
-                return;
-            }
-            // Setează tipul de conținut pentru CSS, JS și TS
-            const ext = path.extname(filePath);
-            const contentTypes: { [key: string]: string } = {
-                ".css": "text/css",
-                ".js": "application/javascript",
-                ".ts": "application/javascript" // TypeScript servit ca JavaScript pentru browser
-            };
-            const contentType = contentTypes[ext] || "application/octet-stream";
-            res.writeHead(200, { "Content-Type": contentType });
-            res.end(data);
-        });
+        const filePath = path.join(frontendPath, url);
+        const ext = path.extname(filePath);
+        const contentTypes: { [key: string]: string } = {
+            ".css": "text/css",
+            ".js": "application/javascript",
+            ".ts": "application/javascript",
+            ".html": "text/html",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".gif": "image/gif"
+        };
+        const contentType = contentTypes[ext] || "application/octet-stream";
+        serveStaticFile(filePath, contentType, res);
         return;
     }
 
+    // Serve README.md
+    if (url === "/README.md" && method === "GET") {
+        const filePath = path.join(__dirname, "..", "..", "..", "README.md");
+        serveStaticFile(filePath, "text/plain", res);
+        return;
+    }
+
+    // 404 - Not found (this handles all unmatched routes)
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Ruta inexistentă" }));
-    return;
+    return; // Add this explicit return
 };

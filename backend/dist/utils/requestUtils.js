@@ -12,7 +12,6 @@ const getRequestBody = (req) => {
         });
         req.on('end', () => {
             try {
-                // Return an empty object if the body is empty, otherwise parse it
                 resolve(body ? JSON.parse(body) : {});
             }
             catch (e) {

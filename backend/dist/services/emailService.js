@@ -32,20 +32,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer = __importStar(require("nodemailer"));
-// Configurația transportorului de email
-// Înlocuiește cu detaliile tale SMTP
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
@@ -54,28 +43,20 @@ const transporter = nodemailer.createTransport({
         pass: 'gZTrsP9zN9sA5Yn4n2'
     }
 });
-/**
- * Trimite un email.
- * @param to - Adresa de email a destinatarului.
- * @param subject - Subiectul emailului.
- * @param text - Corpul emailului (text simplu).
- * @param html - Corpul emailului (HTML).
- */
-const sendEmail = (to, subject, text, html) => __awaiter(void 0, void 0, void 0, function* () {
+const sendEmail = async (to, subject, text, html) => {
     try {
-        const info = yield transporter.sendMail({
-            from: '"Manager de Stoc" <no-reply@example.com>', // Adresa expeditorului
+        const info = await transporter.sendMail({
+            from: '"Manager de Stoc" <no-reply@example.com>',
             to,
             subject,
             text,
             html,
         });
         console.log('Email trimis: %s', info.messageId);
-        // Previzualizează emailul trimis (doar pentru Ethereal)
         console.log('Previzualizează URL: %s', nodemailer.getTestMessageUrl(info));
     }
     catch (error) {
         console.error('Eroare la trimiterea emailului:', error);
     }
-});
+};
 exports.sendEmail = sendEmail;

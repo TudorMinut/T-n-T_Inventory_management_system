@@ -55,41 +55,37 @@ const serveStaticFile = (filePath, contentType, res) => {
     });
 };
 const router = (req, res) => {
-    // CORS configurabil pentru siguranță
     const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://yourdomain.com'] // Înlocuiește cu domeniul tău în producție
+        ? ['https://yourdomain.com']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin || '')) {
         res.setHeader('Access-Control-Allow-Origin', origin || '*');
     }
     else if (process.env.NODE_ENV !== 'production') {
-        res.setHeader('Access-Control-Allow-Origin', '*'); // Doar pentru dezvoltare
+        res.setHeader('Access-Control-Allow-Origin', '*');
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('X-Content-Type-Options', 'nosniff'); // Previne MIME type sniffing
-    res.setHeader('X-Frame-Options', 'DENY'); // Previne clickjacking
-    res.setHeader('X-XSS-Protection', '1; mode=block'); // Activează XSS protection
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
         return;
     }
     const { url, method } = req;
-    // Servește login.html
     if ((url === "/" || url === "/login.html") && method === "GET") {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", "login.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
-    // Servește dashboard.html
     if ((url === "/dashboard" || url === "/dashboard.html") && method === "GET") {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", "dashboard.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
-    // Servește admin.html
     if (url === "/admin" && method === "GET") {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", "admin.html");
         fs.readFile(filePath, (err, data) => {
@@ -103,38 +99,35 @@ const router = (req, res) => {
         });
         return;
     }
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/api/items")) {
+    if (url?.startsWith("/api/items")) {
         return (0, itemsRoute_1.handleItemsRoutes)(req, res);
     }
-    if ((url === null || url === void 0 ? void 0 : url.startsWith("/api/users")) || (url === null || url === void 0 ? void 0 : url.startsWith("/users"))) {
+    if (url?.startsWith("/api/users") || url?.startsWith("/users")) {
         return (0, userRoutes_1.handleUserRoutes)(req, res);
     }
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/api/categories")) {
+    if (url?.startsWith("/api/categories")) {
         return (0, categoriesRoute_1.handleCategoriesRoutes)(req, res);
     }
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/api/notifications")) {
+    if (url?.startsWith("/api/notifications")) {
         return (0, notificationRoutes_1.handleNotificationRoutes)(req, res);
     }
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/api/data")) {
+    if (url?.startsWith("/api/data")) {
         return (0, dataRouteHttp_1.handleDataRoutes)(req, res);
     }
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/api/statistics")) {
+    if (url?.startsWith("/api/statistics")) {
         return (0, statisticsRouteHttp_1.handleStatisticsRoutes)(req, res);
     }
-    // Servește statistics.html
     if ((url === "/statistics" || url === "/statistics.html") && method === "GET") {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", "statistics.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
-    // Servește documentation.html
     if ((url === "/documentation" || url === "/documentation.html") && method === "GET") {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", "documentation.html");
         serveStaticFile(filePath, "text/html", res);
         return;
     }
-    // Servește fișiere statice (ex: CSS, JS, TS)
-    if (url === null || url === void 0 ? void 0 : url.startsWith("/public/")) {
+    if (url?.startsWith("/public/")) {
         const filePath = path.join(__dirname, "..", "..", "..", "frontend", url);
         fs.readFile(filePath, (err, data) => {
             if (err) {
@@ -143,12 +136,11 @@ const router = (req, res) => {
                 res.end("Not found");
                 return;
             }
-            // Setează tipul de conținut pentru CSS, JS și TS
             const ext = path.extname(filePath);
             const contentTypes = {
                 ".css": "text/css",
                 ".js": "application/javascript",
-                ".ts": "application/javascript" // TypeScript servit ca JavaScript pentru browser
+                ".ts": "application/javascript"
             };
             const contentType = contentTypes[ext] || "application/octet-stream";
             res.writeHead(200, { "Content-Type": contentType });
@@ -158,5 +150,6 @@ const router = (req, res) => {
     }
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Ruta inexistentă" }));
+    return;
 };
 exports.router = router;

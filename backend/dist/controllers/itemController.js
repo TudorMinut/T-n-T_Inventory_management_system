@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,8 +7,7 @@ exports.deleteItem = exports.updateItem = exports.createItem = exports.getAllIte
 const database_1 = __importDefault(require("../config/database"));
 const requestUtils_1 = require("../utils/requestUtils");
 const securityUtils_1 = require("../utils/securityUtils");
-// Funcție pentru programarea notificărilor personalizate
-const scheduleCustomNotification = (item) => __awaiter(void 0, void 0, void 0, function* () {
+const scheduleCustomNotification = async (item) => {
     try {
         let scheduledTime = null;
         let nextNotification = null;
@@ -34,7 +24,7 @@ const scheduleCustomNotification = (item) => __awaiter(void 0, void 0, void 0, f
             scheduledTime = new Date(item.notification_fixed_date);
             nextNotification = scheduledTime;
         }
-        yield database_1.default.query(`INSERT INTO notifications (
+        await database_1.default.query(`INSERT INTO notifications (
                 item_id, message, notification_type, 
                 scheduled_time, periodic_interval, next_notification, is_read
             ) VALUES ($1, $2, $3, $4, $5, $6, $7)`, [
@@ -50,10 +40,10 @@ const scheduleCustomNotification = (item) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         console.error('Error scheduling custom notification:', error);
     }
-});
-const getAllItems = (res) => __awaiter(void 0, void 0, void 0, function* () {
+};
+const getAllItems = async (res) => {
     try {
-        const result = yield database_1.default.query(`
+        const result = await database_1.default.query(`
             SELECT 
                 i.id, i.name, i.quantity, i.category_id, c.name as category_name, 
                 i.notification_threshold, i.custom_notification_enabled, i.notification_type, 
@@ -70,13 +60,12 @@ const getAllItems = (res) => __awaiter(void 0, void 0, void 0, function* () {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la preluarea articolelor" }));
     }
-});
+};
 exports.getAllItems = getAllItems;
-const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createItem = async (req, res) => {
     try {
-        const body = yield (0, requestUtils_1.getRequestBody)(req);
+        const body = await (0, requestUtils_1.getRequestBody)(req);
         const { name, category_id, quantity, notification_threshold, custom_notification_enabled, notification_type, notification_after_minutes, notification_interval_minutes, notification_fixed_date, notification_message } = body;
-        // Validări de securitate
         const sanitizedName = (0, securityUtils_1.sanitizeAndValidateName)(name);
         if (!sanitizedName) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -98,7 +87,6 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.end(JSON.stringify({ message: "Pragul de notificare trebuie să fie un număr pozitiv" }));
             return;
         }
-        // Validări pentru notificările personalizate
         let validatedNotificationType = null;
         let validatedAfterMinutes = null;
         let validatedIntervalMinutes = null;
@@ -122,7 +110,7 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 return;
             }
         }
-        const result = yield database_1.default.query(`INSERT INTO items (
+        const result = await database_1.default.query(`INSERT INTO items (
                 name, category_id, quantity, notification_threshold, 
                 custom_notification_enabled, notification_type, 
                 notification_after_minutes, notification_interval_minutes, 
@@ -154,10 +142,9 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             notification_message
         };
         if (custom_notification_enabled) {
-            yield scheduleCustomNotification(newItem);
+            await scheduleCustomNotification(newItem);
         }
-        // Returnează articolul nou creat cu numele categoriei
-        const finalItemResult = yield database_1.default.query(`SELECT 
+        const finalItemResult = await database_1.default.query(`SELECT 
                 i.id, i.name, i.quantity, i.category_id, c.name as category_name,
                 i.notification_threshold, i.custom_notification_enabled, i.notification_type,
                 i.notification_after_minutes, i.notification_interval_minutes,
@@ -173,22 +160,19 @@ const createItem = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la crearea articolului" }));
     }
-});
+};
 exports.createItem = createItem;
-const updateItem = (req, res, id) => __awaiter(void 0, void 0, void 0, function* () {
+const updateItem = async (req, res, id) => {
     try {
-        const body = yield (0, requestUtils_1.getRequestBody)(req);
-        // Obținem articolul existent pentru a păstra datele curente
-        const existingResult = yield database_1.default.query('SELECT * FROM items WHERE id = $1', [id]);
+        const body = await (0, requestUtils_1.getRequestBody)(req);
+        const existingResult = await database_1.default.query('SELECT * FROM items WHERE id = $1', [id]);
         if (existingResult.rows.length === 0) {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: "Articolul nu a fost găsit" }));
             return;
         }
         const existingItem = existingResult.rows[0];
-        // Folosim valorile noi sau păstrăm cele existente
         const { name = existingItem.name, category_id = existingItem.category_id, quantity = existingItem.quantity, notification_threshold = existingItem.notification_threshold, custom_notification_enabled = existingItem.custom_notification_enabled, notification_type = existingItem.notification_type, notification_after_minutes = existingItem.notification_after_minutes, notification_interval_minutes = existingItem.notification_interval_minutes, notification_fixed_date = existingItem.notification_fixed_date, notification_message = existingItem.notification_message } = body;
-        // Validări de securitate doar pentru câmpurile modificate
         if (body.name !== undefined) {
             const sanitizedName = (0, securityUtils_1.sanitizeAndValidateName)(name);
             if (!sanitizedName) {
@@ -212,7 +196,6 @@ const updateItem = (req, res, id) => __awaiter(void 0, void 0, void 0, function*
             res.end(JSON.stringify({ message: "Pragul de notificare trebuie să fie un număr pozitiv" }));
             return;
         }
-        // Validări pentru notificările personalizate doar dacă sunt modificate
         let validatedNotificationType = notification_type;
         let validatedAfterMinutes = notification_after_minutes;
         let validatedIntervalMinutes = notification_interval_minutes;
@@ -241,7 +224,7 @@ const updateItem = (req, res, id) => __awaiter(void 0, void 0, void 0, function*
                 validatedFixedDate = notification_fixed_date;
             }
         }
-        const result = yield database_1.default.query(`UPDATE items SET 
+        const result = await database_1.default.query(`UPDATE items SET 
                 name = $1, category_id = $2, quantity = $3, 
                 notification_threshold = $4, custom_notification_enabled = $5, 
                 notification_type = $6, notification_after_minutes = $7, 
@@ -261,8 +244,7 @@ const updateItem = (req, res, id) => __awaiter(void 0, void 0, void 0, function*
             id
         ]);
         if (result.rows.length > 0) {
-            // Returnează articolul actualizat cu numele categoriei
-            const finalItemResult = yield database_1.default.query(`SELECT 
+            const finalItemResult = await database_1.default.query(`SELECT 
                     i.id, i.name, i.quantity, i.category_id, c.name as category_name,
                     i.notification_threshold, i.custom_notification_enabled, i.notification_type,
                     i.notification_after_minutes, i.notification_interval_minutes,
@@ -283,11 +265,11 @@ const updateItem = (req, res, id) => __awaiter(void 0, void 0, void 0, function*
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la actualizarea articolului" }));
     }
-});
+};
 exports.updateItem = updateItem;
-const deleteItem = (res, id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteItem = async (res, id) => {
     try {
-        const result = yield database_1.default.query("DELETE FROM items WHERE id = $1", [id]);
+        const result = await database_1.default.query("DELETE FROM items WHERE id = $1", [id]);
         if (result.rowCount && result.rowCount > 0) {
             res.writeHead(204, { 'Content-Type': 'application/json' });
             res.end();
@@ -301,9 +283,8 @@ const deleteItem = (res, id) => __awaiter(void 0, void 0, void 0, function* () {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la ștergerea articolului" }));
     }
-});
+};
 exports.deleteItem = deleteItem;
-// Utilitar pentru validare rapidă
 function validateItemFields(fields, res) {
     if (fields.name !== undefined) {
         const sanitizedName = (0, securityUtils_1.sanitizeAndValidateName)(fields.name);
