@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && copyfiles -u 1 ../frontend/**/* ./dist/frontend",
     "build:frontend": "cd ../frontend/public && npx tsc",
     "build:all": "npm run build && npm run build:frontend",
     "dev": "nodemon",
