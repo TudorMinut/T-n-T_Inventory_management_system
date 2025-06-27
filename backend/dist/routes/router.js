@@ -100,11 +100,6 @@ const router = (req, res) => {
         serveStaticFile(filePath, "text/html", res);
         return;
     }
-    if ((url === "/documentation" || url === "/documentation.html") && method === "GET") {
-        const filePath = path.join(frontendPath, "documentation.html");
-        serveStaticFile(filePath, "text/html", res);
-        return;
-    }
     if (url?.startsWith("/api/categories")) {
         return (0, categoriesRoute_1.handleCategoriesRoutes)(req, res);
     }

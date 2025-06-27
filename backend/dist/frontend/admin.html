@@ -30,70 +30,8 @@
     <ul id="adminCategoriesList"></ul>
     <h2>Administrare Articole</h2>
     <ul id="adminItemsList"></ul>
-    <script>
-        if (!localStorage.getItem('userId') || !localStorage.getItem('isAdmin')) {
-            window.location.href = '/';
-        }
-        document.getElementById('logoutBtn').onclick = function () {
-            localStorage.removeItem('userId');
-            localStorage.removeItem('isAdmin');
-            window.location.href = '/';
-        };
-        async function fetchUsers() {
-            const res = await fetch('/api/users');
-            const users = await res.json();
-            const tbody = document.getElementById('usersTable').querySelector('tbody');
-            tbody.innerHTML = '';
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td>${user.role}</td>`;
-                const actions = document.createElement('td');
-                if (user.role !== 'admin') {
-                    const promoteBtn = document.createElement('button');
-                    promoteBtn.textContent = 'Promoveaza admin';
-                    promoteBtn.onclick = async () => {
-                        await fetch(`/api/users/${user.id}/promote`, { method: 'PUT' });
-                        fetchUsers();
-                    };
-                    actions.appendChild(promoteBtn);
-                }
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Sterge';
-                deleteBtn.onclick = async () => {
-                    await fetch(`/api/users/${user.id}`, { method: 'DELETE' });
-                    fetchUsers();
-                };
-                actions.appendChild(deleteBtn);
-                tr.appendChild(actions);
-                tbody.appendChild(tr);
-            });
-        }
-        async function fetchCategories() {
-            const res = await fetch('/api/categories');
-            const categories = await res.json();
-            const list = document.getElementById('adminCategoriesList');
-            list.innerHTML = '';
-            categories.forEach(cat => {
-                const li = document.createElement('li');
-                li.textContent = `${cat.id}: ${cat.name}`;
-                list.appendChild(li);
-            });
-        }
-        async function fetchItems() {
-            const res = await fetch('/api/items');
-            const items = await res.json();
-            const list = document.getElementById('adminItemsList');
-            list.innerHTML = '';
-            items.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.id}: ${item.name} (Categorie: ${item.category}, Cant: ${item.quantity})`;
-                list.appendChild(li);
-            });
-        }
-        fetchUsers();
-        fetchCategories();
-        fetchItems();
-    </script>
+    <div id="feedback" class="feedback"></div>
+    <script src="/public/admin.js"></script>
 </body>
 
 </html>

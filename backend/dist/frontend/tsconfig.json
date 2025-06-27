@@ -10,7 +10,14 @@
         "skipLibCheck": true
     },
     "include": [
-        "dashboard.ts"
+        "dashboard.ts",
+        "admin.ts",
+        "login.ts",
+        "statistics.ts",
+        "newFile1.ts",
+        "newFile2.ts",
+        "newFile3.ts",
+        "auth.ts"
     ],
     "exclude": [
         "node_modules"

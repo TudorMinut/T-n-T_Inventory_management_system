@@ -175,7 +175,10 @@ function fetchNotifications() {
     });
 }
 // Operații CRUD expuse global
-window.deleteItem = (id) => __awaiter(void 0, void 0, void 0, function* () { yield fetch(`/api/items/${id}`, { method: 'DELETE' }); fetchItems(); });
+window.deleteItem = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield fetch(`/api/items/${id}`, { method: 'DELETE' });
+    fetchItems();
+});
 window.deleteCategory = (id) => __awaiter(void 0, void 0, void 0, function* () {
     if (confirm('Ești sigur că vrei să ștergi această categorie? Articolele din această categorie vor fi mutate în categoria "Necategorizate".')) {
         try {

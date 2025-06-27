@@ -169,7 +169,10 @@ async function fetchNotifications() {
 }
 
 // Operații CRUD expuse global
-(window as any).deleteItem = async (id: number) => { await fetch(`/api/items/${id}`, { method: 'DELETE' }); fetchItems(); };
+(window as any).deleteItem = async (id: number) => {
+    await fetch(`/api/items/${id}`, { method: 'DELETE' });
+    fetchItems();
+};
 (window as any).deleteCategory = async (id: number) => {
     if (confirm('Ești sigur că vrei să ștergi această categorie? Articolele din această categorie vor fi mutate în categoria "Necategorizate".')) {
         try { await fetch(`/api/categories/${id}`, { method: 'DELETE' }); fetchCategories(); fetchItems(); } catch { alert('Eroare la ștergerea categoriei'); }
