@@ -1,41 +1,126 @@
 import { ServerResponse } from "http";
-import { readData, writeData } from "../utils/fileUtils";
+import pool from "../config/database";
+import bcrypt from "bcrypt";
+import { validateEmail, validatePassword, sanitizeAndValidateName } from "../utils/securityUtils";
 
-const usersDB = {
-    users: [],
-};
-
-export const registerUser = (data: any, res: ServerResponse) => {
-    const db = readData();
+export const registerUser = async (data: any, res: ServerResponse) => {
     const { username, email, password } = data;
 
-    // Verifică dacă utilizatorul există deja
-    const userExists = db.users.find((user: any) => user.email === email);
-    if (userExists) {
-        res.writeHead(409, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Utilizatorul există deja" }));
+    // Validări de securitate
+    if (!validateEmail(email)) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Email invalid" }));
         return;
     }
 
-    const newUser = { id: Date.now(), username, email, password }; // Fără hashing deocamdată
-    db.users.push(newUser);
-    writeData(db);
+    if (!validatePassword(password)) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Parola trebuie să aibă între 6-128 caractere" }));
+        return;
+    }
 
-    res.writeHead(201, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ id: newUser.id, username: newUser.username, email: newUser.email }));
+    const sanitizedUsername = sanitizeAndValidateName(username);
+    if (!sanitizedUsername) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Numele de utilizator trebuie să aibă între 2-100 caractere" }));
+        return;
+    }
+
+    const saltRounds = 10;
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const result = await pool.query(
+            'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email',
+            [sanitizedUsername, email.toLowerCase().trim(), hashedPassword]
+        );
+        res.writeHead(201, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result.rows[0]));
+    } catch (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Eroare la înregistrare" }));
+    }
 };
 
-export const loginUser = (data: any, res: ServerResponse) => {
-    const db = readData();
+export const loginUser = async (data: any, res: ServerResponse) => {
     const { email, password } = data;
 
-    const user = db.users.find((u: any) => u.email === email && u.password === password);
+    // Validări de securitate
+    if (!validateEmail(email) || !password) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Email sau parolă invalide" }));
+        return;
+    }
 
-    if (user) {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase().trim()]);
+        if (result.rows.length > 0) {
+            const user = result.rows[0];
+            const match = await bcrypt.compare(password, user.password);
+            if (match) {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({
+                    message: "Autentificare cu succes",
+                    userId: user.id,
+                    isAdmin: user.role === 'admin'
+                }));
+            } else {
+                res.writeHead(401, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ message: "Email sau parolă incorectă" }));
+            }
+        } else {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ message: "Utilizatorul nu a fost găsit" }));
+        }
+    } catch (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Eroare la autentificare" }));
+    }
+};
+
+// List all users (admin only)
+export const listUsers = async (res: ServerResponse) => {
+    try {
+        const result = await pool.query('SELECT id, username, email, role FROM users ORDER BY id');
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Autentificare cu succes", userId: user.id }));
-    } else {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Email sau parolă incorectă" }));
+        res.end(JSON.stringify(result.rows));
+    } catch (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Eroare la listarea utilizatorilor" }));
+    }
+};
+
+// Promote user to admin (admin only)
+export const promoteUser = async (data: any, res: ServerResponse) => {
+    const { userId } = data;
+    if (!userId) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        return;
+    }
+    try {
+        await pool.query('UPDATE users SET role = $1 WHERE id = $2', ['admin', userId]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Utilizator promovat la admin" }));
+    } catch (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Eroare la promovare" }));
+    }
+};
+
+// Delete user (admin only)
+export const deleteUser = async (userId: number, res: ServerResponse) => {
+    if (!userId) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        return;
+    }
+    try {
+        await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Utilizator șters" }));
+    } catch (error) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Eroare la ștergere" }));
     }
 };

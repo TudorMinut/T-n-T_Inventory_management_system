@@ -1,17 +1,23 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { getAllCategories, createCategory } from "../controllers/categoryController";
+import { getAllCategories, createCategory, updateCategory, deleteCategory } from "../controllers/categoryController";
 
-export const handleCategoriesRoute = async (req: IncomingMessage, res: ServerResponse) => {
-    if (req.method === "GET") {
+export const handleCategoriesRoutes = async (req: IncomingMessage, res: ServerResponse) => {
+    const { url, method } = req;
+    const regexResult = url?.match(/^\/api\/categories\/(\d+)$/);
+
+    if (url === "/api/categories" && method === "GET") {
         return getAllCategories(res);
+    } else if (url === "/api/categories" && method === "POST") {
+        return createCategory(req, res);
+    } else if (regexResult && method === "PUT") {
+        const id = parseInt(regexResult[1]);
+        return updateCategory(req, res, id);
+    } else if (regexResult && method === "DELETE") {
+        const id = parseInt(regexResult[1]);
+        return deleteCategory(res, id);
     }
 
-    if (req.method === "POST") {
-        let body = "";
-        req.on("data", chunk => (body += chunk));
-        req.on("end", () => {
-            const data = JSON.parse(body);
-            return createCategory(data, res);
-        });
-    }
+    // Dacă nicio rută nu se potrivește
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Rută negăsită pentru categorii" }));
 };

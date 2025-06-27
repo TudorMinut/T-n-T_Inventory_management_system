@@ -9,19 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleItemsRoute = void 0;
+exports.handleItemsRoutes = void 0;
 const itemController_1 = require("../controllers/itemController");
-const handleItemsRoute = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.method === "GET") {
+const handleItemsRoutes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { url, method } = req;
+    const regexResult = url === null || url === void 0 ? void 0 : url.match(/^\/api\/items\/(\d+)$/);
+    if (url === "/api/items" && method === "GET") {
         return (0, itemController_1.getAllItems)(res);
     }
-    if (req.method === "POST") {
-        let body = "";
-        req.on("data", chunk => (body += chunk));
-        req.on("end", () => {
-            const data = JSON.parse(body);
-            return (0, itemController_1.createItem)(data, res);
-        });
+    else if (url === "/api/items" && method === "POST") {
+        return (0, itemController_1.createItem)(req, res);
     }
+    else if (regexResult && method === "PUT") {
+        const id = parseInt(regexResult[1]);
+        return (0, itemController_1.updateItem)(req, res, id);
+    }
+    else if (regexResult && method === "DELETE") {
+        const id = parseInt(regexResult[1]);
+        return (0, itemController_1.deleteItem)(res, id);
+    }
+    // Dacă nicio rută nu se potrivește
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Rută negăsită pentru articole" }));
 });
-exports.handleItemsRoute = handleItemsRoute;
+exports.handleItemsRoutes = handleItemsRoutes;
