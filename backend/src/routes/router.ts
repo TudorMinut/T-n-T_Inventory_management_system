@@ -82,13 +82,6 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
         return;
     }
 
-    // Serve documentation.html
-    if ((url === "/documentation" || url === "/documentation.html") && method === "GET") {
-        const filePath = path.join(frontendPath, "documentation.html");
-        serveStaticFile(filePath, "text/html", res);
-        return;
-    }
-
     // API Routes
     if (url?.startsWith("/api/categories")) {
         return handleCategoriesRoutes(req, res);
