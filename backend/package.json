@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc && npx copyfiles -u 1 ../frontend/**/* ./dist/frontend",
+    "build": "tsc && npx copyfiles -u 2 ../frontend/**/* ./dist/frontend",
     "prebuild:frontend": "cd ../frontend && npm install typescript --no-save",
     "build:frontend": "cd ../frontend && npx tsc",
     "build:all": "npm run build && npm run build:frontend",
