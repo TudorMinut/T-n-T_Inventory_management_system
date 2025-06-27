@@ -11,21 +11,21 @@ export async function fetchNotifications() {
 }
 
 export function setupCustomNotificationToggle() {
-    const customNotificationEnabled = $<HTMLInputElement>('customNotificationEnabled');
+    const customNotificationEnabled = $('customNotificationEnabled');
     const notificationOptions = $('notificationOptions');
     if (customNotificationEnabled && notificationOptions) {
         customNotificationEnabled.addEventListener('change', function () {
-            notificationOptions.style.display = this.checked ? 'block' : 'none';
+            notificationOptions.style.display = (this as HTMLInputElement).checked ? 'block' : 'none';
         });
     }
 }
 
 export function setupNotificationTypeToggle() {
-    const notificationType = $<HTMLSelectElement>('notificationType');
+    const notificationType = $('notificationType');
     const emailOptions = $('emailOptions');
     if (notificationType && emailOptions) {
         notificationType.addEventListener('change', function () {
-            emailOptions.style.display = this.value === 'email' ? 'block' : 'none';
+            emailOptions.style.display = (this as HTMLSelectElement).value === 'email' ? 'block' : 'none';
         });
     }
 }
