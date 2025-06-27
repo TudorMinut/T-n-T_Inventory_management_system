@@ -1,14 +1,14 @@
-
 import * as nodemailer from 'nodemailer';
 
 // Configurația transportorului de email
 // Înlocuiește cu detaliile tale SMTP
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
     auth: {
-        user: 'adolph.weber@ethereal.email',
-        pass: 'gZTrsP9zN9sA5Yn4n2'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
     }
 });
 
@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (to: string, subject: string, text: string, html?: string) => {
     try {
         const info = await transporter.sendMail({
-            from: '"Manager de Stoc" <no-reply@example.com>', // Adresa expeditorului
+            from: `"Manager de Stoc" <${process.env.SMTP_FROM_EMAIL}>`, // Adresa expeditorului
             to,
             subject,
             text,
@@ -31,7 +31,7 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
 
         console.log('Email trimis: %s', info.messageId);
         // Previzualizează emailul trimis (doar pentru Ethereal)
-        console.log('Previzualizează URL: %s', nodemailer.getTestMessageUrl(info));
+        // console.log('Previzualizează URL: %s', nodemailer.getTestMessageUrl(info));
     } catch (error) {
         console.error('Eroare la trimiterea emailului:', error);
     }
