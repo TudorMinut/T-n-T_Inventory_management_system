@@ -1,5 +1,8 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { getAllItems, createItem, updateItem, deleteItem } from "../controllers/itemController";
+import { getAllItems } from "../controllers/item/read";
+import { createItem } from "../controllers/item/create";
+import { updateItem } from "../controllers/item/update";
+import { deleteItem } from "../controllers/item/delete";
 
 export const handleItemsRoutes = async (req: IncomingMessage, res: ServerResponse) => {
   const { url, method } = req;
