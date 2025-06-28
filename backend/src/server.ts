@@ -61,16 +61,6 @@ const initializeDatabase = async () => {
             );
         `);
 
-        // Insert default categories
-        await pool.query(`
-            INSERT INTO categories (name) VALUES 
-                ('Necategorizate'),
-                ('Electronice'), 
-                ('Papetarie'), 
-                ('Curatenie')
-            ON CONFLICT (name) DO NOTHING;
-        `);
-
         // Create admin user if no users exist
         const userCount = await pool.query('SELECT COUNT(*) FROM users');
         if (parseInt(userCount.rows[0].count) === 0) {

@@ -89,14 +89,6 @@ const initializeDatabase = async () => {
                 is_active BOOLEAN DEFAULT TRUE
             );
         `);
-        await database_1.default.query(`
-            INSERT INTO categories (name) VALUES 
-                ('Necategorizate'),
-                ('Electronice'), 
-                ('Papetarie'), 
-                ('Curatenie')
-            ON CONFLICT (name) DO NOTHING;
-        `);
         const userCount = await database_1.default.query('SELECT COUNT(*) FROM users');
         if (parseInt(userCount.rows[0].count) === 0) {
             const bcrypt = require('bcrypt');
