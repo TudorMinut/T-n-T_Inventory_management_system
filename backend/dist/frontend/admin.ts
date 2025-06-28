@@ -1,4 +1,4 @@
-import { handleLogout } from "./auth";
+import { handleLogout } from "./auth.js";
 
 if (!localStorage.getItem('userId') || localStorage.getItem('isAdmin') !== 'true') {
     window.location.href = '/';
