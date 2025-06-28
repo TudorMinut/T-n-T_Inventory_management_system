@@ -123,11 +123,11 @@ function displaySortedItems() {
             <strong>${item.name}</strong> 
             (Categorie: ${item.category_name || 'Necategorizat'}) 
             <br>
-            Cantitate: <input type='number' value='${item.quantity || 0}' min='0' style='width:70px; margin: 2px;' onchange='updateItemQuantity(${item.id}, this.value)'>
+            Cantitate: <input type='number' value='${item.quantity || 0}' min='0' class='quantity-input' onchange='updateItemQuantity(${item.id}, this.value)'>
             | Prag notificare: ${item.notification_threshold || 0}
             ${item.created_at ? `| Adăugat: ${new Date(item.created_at).toLocaleDateString('ro-RO')}` : ''}
-            ${item.custom_notification_enabled ? ` <span style="color: blue;">[Notificare: ${item.notification_type}]</span>` : ''}
-            <button onclick="deleteItem(${item.id})" style="margin-left: 10px; background: #ff4444; color: white; border: none; padding: 2px 8px; border-radius: 3px;">Șterge</button>
+            ${item.custom_notification_enabled ? ` <span class="notification-custom">[Notificare: ${item.notification_type}]</span>` : ''}
+            <button class="delete-btn" onclick="deleteItem(${item.id})">Șterge</button>
         </li>`
     ).join(''));
 }

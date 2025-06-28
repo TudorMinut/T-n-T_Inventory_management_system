@@ -3,13 +3,6 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.header-buttons button {
-    margin-right: 0.7rem;
-    margin-bottom: 0.5rem;
-    white-space: nowrap;
 }
 
 #usersTable {
@@ -71,13 +64,14 @@
     display: block;
     width: 100%;
     max-width: 120px;
+    position: sticky;
+    right: 0;
 }
 
 .notification-delete-btn:hover {
     background: #c0392b;
 }
 
-/* Notificari: lista pe o singura coloana */
 #notificationsList li {
     display: flex;
     flex-direction: row;
