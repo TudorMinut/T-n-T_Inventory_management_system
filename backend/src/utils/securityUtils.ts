@@ -49,8 +49,6 @@ export const validatePositiveInteger = (num: any): boolean => {
 
 /**
  * Valideaza un numar intreg non-negativ
- * @param num -
- * @returns 
  */
 export const validateNonNegativeInteger = (num: any): boolean => {
     const parsed = parseInt(num);
@@ -59,8 +57,6 @@ export const validateNonNegativeInteger = (num: any): boolean => {
 
 /**
  * Sanitizeaza si valideaza input-ul pentru numele categoriilor/articolelor
- * @param name -
- * @returns 
  */
 export const sanitizeAndValidateName = (name: string): string | null => {
     if (!validateStringLength(name, 2, 100)) {
@@ -73,8 +69,6 @@ export const sanitizeAndValidateName = (name: string): string | null => {
 
 /**
  * Valideaza parola - cel putin 6 caractere
- * @param password
- * @returns 
  */
 export const validatePassword = (password: string): boolean => {
     return !!(password && password.length >= 6 && password.length <= 128);
