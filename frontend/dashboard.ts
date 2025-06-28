@@ -172,11 +172,24 @@ async function fetchItems() {
 
 // Notificări
 async function fetchNotifications() {
-    const notifications = await api<any[]>('/api/notifications');
-    setHTML($('notificationsList'), notifications.map(notif =>
-        `<li>[${new Date(notif.created_at).toLocaleString()}] ${notif.message}${notif.notification_type && notif.notification_type !== 'stock_low' ? ` (${notif.notification_type})` : ''}</li>`
-    ).join(''));
+    const notifications = await api<any[]>("/api/notifications");
+    setHTML($("notificationsList"), notifications.map(notif =>
+        `<li>
+            [${new Date(notif.created_at).toLocaleString()}] ${notif.message}${notif.notification_type && notif.notification_type !== 'stock_low' ? ` (${notif.notification_type})` : ''}
+            <button class="delete-btn" onclick="deleteNotification(${notif.id})">Șterge</button>
+        </li>`
+    ).join(""));
 }
+
+(window as any).deleteNotification = async (id: number) => {
+    if (!confirm('Ești sigur că vrei să ștergi această notificare?')) return;
+    try {
+        await fetch(`/api/notifications/${id}`, { method: 'DELETE' });
+        fetchNotifications();
+    } catch {
+        alert('Eroare la ștergerea notificării');
+    }
+};
 
 // Operații CRUD expuse global
 (window as any).deleteItem = async (id: number) => {
