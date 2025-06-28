@@ -2,8 +2,8 @@
 
 /**
  * Sanitizeaza un string pentru a preveni XSS
- * @param input - String-ul de sanitizat
- * @returns String sanitizat
+ * @param input - 
+ * @returns 
  */
 export const sanitizeHtml = (input: string): string => {
     if (!input) return '';
@@ -18,8 +18,8 @@ export const sanitizeHtml = (input: string): string => {
 
 /**
  * Valideaza un email
- * @param email - Email-ul de validat
- * @returns true daca este valid
+ * @param email 
+ * @returns 
  */
 export const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,10 +28,10 @@ export const validateEmail = (email: string): boolean => {
 
 /**
  * Valideaza lungimea unui string
- * @param str - String-ul de validat
- * @param minLength - Lungimea minima
- * @param maxLength - Lungimea maxima
- * @returns true daca este valid
+ * @param str 
+ * @param minLength 
+ * @param maxLength
+ * @returns 
  */
 export const validateStringLength = (str: string, minLength: number = 1, maxLength: number = 255): boolean => {
     return !!(str && str.trim().length >= minLength && str.trim().length <= maxLength);
@@ -39,8 +39,8 @@ export const validateStringLength = (str: string, minLength: number = 1, maxLeng
 
 /**
  * Valideaza un numar intreg pozitiv
- * @param num - Numărul de validat
- * @returns true daca este valid
+ * @param num -
+ * @returns 
  */
 export const validatePositiveInteger = (num: any): boolean => {
     const parsed = parseInt(num);
@@ -49,8 +49,8 @@ export const validatePositiveInteger = (num: any): boolean => {
 
 /**
  * Valideaza un numar intreg non-negativ
- * @param num - Numărul de validat
- * @returns true daca este valid
+ * @param num -
+ * @returns 
  */
 export const validateNonNegativeInteger = (num: any): boolean => {
     const parsed = parseInt(num);
@@ -59,8 +59,8 @@ export const validateNonNegativeInteger = (num: any): boolean => {
 
 /**
  * Sanitizeaza si valideaza input-ul pentru numele categoriilor/articolelor
- * @param name - Numele de validat
- * @returns string sanitizat sau null daca invalid
+ * @param name -
+ * @returns 
  */
 export const sanitizeAndValidateName = (name: string): string | null => {
     if (!validateStringLength(name, 2, 100)) {
@@ -73,8 +73,8 @@ export const sanitizeAndValidateName = (name: string): string | null => {
 
 /**
  * Valideaza parola - cel putin 6 caractere
- * @param password - Parola de validat
- * @returns true daca este valida
+ * @param password
+ * @returns 
  */
 export const validatePassword = (password: string): boolean => {
     return !!(password && password.length >= 6 && password.length <= 128);
