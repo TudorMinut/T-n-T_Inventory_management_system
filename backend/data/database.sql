@@ -40,11 +40,3 @@ CREATE TABLE IF NOT EXISTS notifications (
     next_notification TIMESTAMP WITH TIME ZONE,
     is_active BOOLEAN DEFAULT TRUE
 );
-
--- Inserează categoriile inițiale, inclusiv categoria specială pentru articolele necategorizate
-INSERT INTO categories (name) VALUES 
-    ('Necategorizate'),
-    ('Electronice'), 
-    ('Papetarie'), 
-    ('Curatenie')
-ON CONFLICT (name) DO NOTHING;
