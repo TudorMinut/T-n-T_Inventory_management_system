@@ -4,6 +4,7 @@ import { getRequestBody } from '../../utils/requestUtils';
 import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeInteger } from '../../utils/securityUtils';
 import { createAndSendStockNotification } from '../../services/instantNotificationService';
 
+// Functie pentru actualizarea unui articol
 export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: number) => {
     try {
         const body = await getRequestBody(req);

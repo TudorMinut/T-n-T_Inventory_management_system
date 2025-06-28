@@ -18,11 +18,11 @@ const createManualNotification = async (req, res) => {
         let scheduledTime = null;
         let nextNotification = null;
         let periodicInterval = null;
-        let message = notification_message || 'Notificare manuală';
+        let message = notification_message || 'Notificare manuala';
         if (notification_type === 'fixed_date') {
             if (!notification_fixed_date) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Data fixă este necesară.' }));
+                res.end(JSON.stringify({ message: 'Data fixa este necesara.' }));
                 return;
             }
             scheduledTime = new Date(notification_fixed_date);
@@ -45,12 +45,12 @@ const createManualNotification = async (req, res) => {
             await database_1.default.query(`INSERT INTO notifications (item_id, message, notification_type, scheduled_time, next_notification, is_read) VALUES ($1, $2, $3, $4, $5, $6)`, [item_id, message, notification_type, scheduledTime, nextNotification, false]);
         }
         res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'Notificare creată cu succes.' }));
+        res.end(JSON.stringify({ message: 'Notificare creata cu succes.' }));
     }
     catch (error) {
-        console.error('Eroare la crearea notificării manuale:', error);
+        console.error('Eroare la crearea notificarii manuale:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'Eroare la crearea notificării.' }));
+        res.end(JSON.stringify({ message: 'Eroare la crearea notificarii.' }));
     }
 };
 exports.createManualNotification = createManualNotification;

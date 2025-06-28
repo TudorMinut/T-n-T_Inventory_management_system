@@ -1,6 +1,7 @@
 import { ServerResponse } from 'http';
 import pool from '../../config/database';
 
+// Functie pentru stergerea unui articol
 export const deleteItem = async (res: ServerResponse, id: number) => {
     const client = await pool.connect();
     try {

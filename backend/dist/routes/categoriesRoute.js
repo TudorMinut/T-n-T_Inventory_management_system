@@ -20,6 +20,6 @@ const handleCategoriesRoutes = async (req, res) => {
         return (0, categoryController_1.deleteCategory)(res, id);
     }
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru categorii" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru categorii" }));
 };
 exports.handleCategoriesRoutes = handleCategoriesRoutes;

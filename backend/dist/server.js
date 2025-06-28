@@ -107,7 +107,7 @@ const initializeDatabase = async () => {
 };
 initializeDatabase();
 setInterval(() => {
-    console.log("Verificare stocuri pentru notificări...");
+    console.log("Verificare stocuri pentru notificari...");
     (0, notificationService_1.checkStockAndNotify)();
 }, 30000);
 const server = http.createServer((req, res) => {

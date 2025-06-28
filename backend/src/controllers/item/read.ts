@@ -1,6 +1,7 @@
 import { ServerResponse } from 'http';
 import pool from "../../config/database";
 
+// Functie pentru preluarea tuturor articolelor
 export const getAllItems = async (res: ServerResponse) => {
     try {
         const result = await pool.query(`

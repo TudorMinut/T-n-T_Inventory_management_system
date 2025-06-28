@@ -26,6 +26,6 @@ const handleUserRoutes = async (req, res) => {
         return (0, userController_1.deleteUser)(userId, res);
     }
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru utilizatori" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru utilizatori" }));
 };
 exports.handleUserRoutes = handleUserRoutes;

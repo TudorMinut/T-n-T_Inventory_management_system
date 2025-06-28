@@ -1,4 +1,4 @@
-// Verificare autentificare și inițializare
+// Verificare autentificare si initializare
 if (!localStorage.getItem('userId')) window.location.href = '/';
 if (localStorage.getItem('isAdmin')) document.getElementById('adminBtn')?.setAttribute('style', 'display:inline-block');
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
@@ -11,7 +11,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
 const $ = (id: string) => document.getElementById(id);
 const setHTML = (el: HTMLElement | null, html: string) => { if (el) el.innerHTML = html; };
 
-// Notificare personalizată
+// Notificare personalizata
 $('customNotificationEnabled')?.addEventListener('change', function (this: HTMLInputElement) {
     if ($('notificationDetails')) $('notificationDetails')!.style.display = this.checked ? 'block' : 'none';
 });
@@ -34,9 +34,9 @@ async function api<T>(url: string, opts?: RequestInit): Promise<T> {
 let currentSort = { field: '', direction: 'asc' };
 let cachedItems: any[] = [];
 
-// Funcții de sortare
+// Functii de sortare
 function sortItems(field: string) {
-    // Schimbă direcția dacă se sortează după același câmp
+    // Schimba directia daca se sorteaza dupa acelasi camp
     if (currentSort.field === field) {
         currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
     } else {
@@ -44,10 +44,10 @@ function sortItems(field: string) {
         currentSort.direction = 'asc';
     }
 
-    // Actualizează indicatorii vizuali
+    // Actualizeaza indicatorii vizuali
     updateSortIndicators();
 
-    // Sortează și afișează articolele
+    // Sorteaza si afiseaza articolele
     displaySortedItems();
 }
 
@@ -152,15 +152,15 @@ async function fetchItems() {
     try {
         const items = await api<any[]>('/api/items');
         console.log('Items received:', items); // Debug log
-        cachedItems = items; // Salvează articolele în cache
-        displaySortedItems(); // Afișează articolele sortate
+        cachedItems = items; // Salveaza articolele in cache
+        displaySortedItems(); // Afiseaza articolele sortate
     } catch (error) {
         console.error('Error fetching items:', error);
-        setHTML($('itemsList'), '<li>Eroare la încărcarea articolelor</li>');
+        setHTML($('itemsList'), '<li>Eroare la incarcarea articolelor</li>');
     }
 }
 
-// Notificări
+// Notificari
 async function fetchNotifications() {
     const notifications = await api<any[]>('/api/notifications');
     setHTML($('notificationsList'), notifications.map(notif =>
@@ -168,14 +168,14 @@ async function fetchNotifications() {
     ).join(''));
 }
 
-// Operații CRUD expuse global
+// Operatii CRUD expuse global
 (window as any).deleteItem = async (id: number) => {
     await fetch(`/api/items/${id}`, { method: 'DELETE' });
     fetchItems();
 };
 (window as any).deleteCategory = async (id: number) => {
-    if (confirm('Ești sigur că vrei să ștergi această categorie? Articolele din această categorie vor fi mutate în categoria "Necategorizate".')) {
-        try { await fetch(`/api/categories/${id}`, { method: 'DELETE' }); fetchCategories(); fetchItems(); } catch { alert('Eroare la ștergerea categoriei'); }
+    if (confirm('Esti sigur ca vrei sa stergi aceasta categorie? Articolele din aceasta categorie vor fi mutate in categoria "Necategorizate".')) {
+        try { await fetch(`/api/categories/${id}`, { method: 'DELETE' }); fetchCategories(); fetchItems(); } catch { alert('Eroare la stergerea categoriei'); }
     }
 };
 (window as any).editCategory = async (id: number, currentName: string) => {
@@ -188,7 +188,7 @@ async function fetchNotifications() {
     if (!/^[0-9]+$/.test(newQuantity)) return alert('Cantitatea trebuie să fie un număr pozitiv!');
     try { await fetch(`/api/items/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: parseInt(newQuantity) }) }); fetchItems(); } catch { alert('Eroare la actualizarea cantității'); }
 };
-// Funcții de sortare expuse global
+// Functii de sortare expuse global
 (window as any).sortItems = sortItems;
 (window as any).resetSort = resetSort;
 
@@ -217,10 +217,10 @@ $('itemForm')?.addEventListener('submit', async function (e) {
             if (notifType.value === 'fixed_date') data.notification_fixed_date = new Date(($('fixedDateTime') as HTMLInputElement)?.value).toISOString();
         }
     }
-    try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.style.display = 'none'; fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adăugarea articolului')); }
+    try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.style.display = 'none'; fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adaugarea articolului')); }
 });
 
-// Inițializare
+// Initializare
 fetchCategories();
 fetchItems();
 fetchNotifications();

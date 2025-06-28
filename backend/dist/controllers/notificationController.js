@@ -17,7 +17,7 @@ const getNotifications = async (res) => {
     catch (error) {
         console.error(error);
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare internă la preluarea notificărilor." }));
+        res.end(JSON.stringify({ message: "Eroare interna la preluarea notificarilor." }));
     }
 };
 exports.getNotifications = getNotifications;

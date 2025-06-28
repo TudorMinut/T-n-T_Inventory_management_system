@@ -12,6 +12,6 @@ const handleStatisticsRoutes = async (req, res) => {
         return (0, statisticsPdfController_1.getStatsPdf)(req, res);
     }
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru statistici" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru statistici" }));
 };
 exports.handleStatisticsRoutes = handleStatisticsRoutes;

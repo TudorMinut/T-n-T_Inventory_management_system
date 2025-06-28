@@ -159,7 +159,7 @@ const router = (req, res) => {
         return;
     }
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Ruta inexistentă" }));
+    res.end(JSON.stringify({ message: "Ruta inexistenta" }));
     return;
 };
 exports.router = router;

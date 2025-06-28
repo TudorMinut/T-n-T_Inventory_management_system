@@ -1,4 +1,4 @@
-/* Stiluri pentru dashboard: header, footer, sortare, notificări, layout */
+/* Stiluri pentru dashboard: header, footer, sortare, notificari, layout */
 .main-header {
     background: #3498db;
     color: #fff;
@@ -21,7 +21,7 @@
     margin: 0;
     font-size: 1.8rem;
     color: #fff;
-    /* Asigură alb pentru titlu */
+    /* Asigura alb pentru titlu */
     letter-spacing: 1px;
     font-weight: 700;
 }
@@ -153,7 +153,7 @@
     display: flex;
     align-items: center;
     gap: 1.5em;
-    /* crește spațiul între checkbox și text */
+    /* creste spatiul intre checkbox si text */
     margin-bottom: 1.5em;
-    /* crește spațiul sub label față de butonul Adauga articol */
+    /* creste spatiul sub label fata de butonul Adauga articol */
 }

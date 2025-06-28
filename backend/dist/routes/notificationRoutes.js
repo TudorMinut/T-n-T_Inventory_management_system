@@ -18,6 +18,6 @@ const handleNotificationRoutes = async (req, res) => {
         return (0, notificationController_1.deleteNotification)(id, res);
     }
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită" }));
+    res.end(JSON.stringify({ message: "Ruta negasita" }));
 };
 exports.handleNotificationRoutes = handleNotificationRoutes;

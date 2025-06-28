@@ -16,13 +16,13 @@ const registerUser = async (data, res) => {
     }
     if (!(0, securityUtils_1.validatePassword)(password)) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Parola trebuie să aibă între 6-128 caractere" }));
+        res.end(JSON.stringify({ message: "Parola trebuie sa aiba intre 6-128 caractere" }));
         return;
     }
     const sanitizedUsername = (0, securityUtils_1.sanitizeAndValidateName)(username);
     if (!sanitizedUsername) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Numele de utilizator trebuie să aibă între 2-100 caractere" }));
+        res.end(JSON.stringify({ message: "Numele de utilizator trebuie sa aiba intre 2-100 caractere" }));
         return;
     }
     const saltRounds = 10;
@@ -34,7 +34,7 @@ const registerUser = async (data, res) => {
     }
     catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare la înregistrare" }));
+        res.end(JSON.stringify({ message: "Eroare la inregistrare" }));
     }
 };
 exports.registerUser = registerUser;
@@ -42,7 +42,7 @@ const loginUser = async (data, res) => {
     const { email, password } = data;
     if (!(0, securityUtils_1.validateEmail)(email) || !password) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Email sau parolă invalide" }));
+        res.end(JSON.stringify({ message: "Email sau parola invalide" }));
         return;
     }
     try {
@@ -60,12 +60,12 @@ const loginUser = async (data, res) => {
             }
             else {
                 res.writeHead(401, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Email sau parolă incorectă" }));
+                res.end(JSON.stringify({ message: "Email sau parola incorecta" }));
             }
         }
         else {
             res.writeHead(404, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Utilizatorul nu a fost găsit" }));
+            res.end(JSON.stringify({ message: "Utilizatorul nu a fost gasit" }));
         }
     }
     catch (error) {
@@ -90,7 +90,7 @@ const promoteUser = async (data, res) => {
     const { userId } = data;
     if (!userId) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        res.end(JSON.stringify({ message: "ID utilizator lipsa" }));
         return;
     }
     try {
@@ -107,17 +107,17 @@ exports.promoteUser = promoteUser;
 const deleteUser = async (userId, res) => {
     if (!userId) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        res.end(JSON.stringify({ message: "ID utilizator lipsa" }));
         return;
     }
     try {
         await database_1.default.query('DELETE FROM users WHERE id = $1', [userId]);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Utilizator șters" }));
+        res.end(JSON.stringify({ message: "Utilizator sters" }));
     }
     catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare la ștergere" }));
+        res.end(JSON.stringify({ message: "Eroare la stergere" }));
     }
 };
 exports.deleteUser = deleteUser;

@@ -5,6 +5,7 @@ import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeIn
 import { createAndSendStockNotification } from '../../services/instantNotificationService';
 import { scheduleCustomNotification } from './utils';
 
+// Functie pentru crearea unui articol nou
 export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
     try {
         const body = await getRequestBody(req);
