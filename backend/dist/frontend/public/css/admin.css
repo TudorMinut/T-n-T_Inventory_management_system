@@ -3,6 +3,13 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.header-buttons button {
+    margin-right: 0.7rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
 }
 
 #usersTable {

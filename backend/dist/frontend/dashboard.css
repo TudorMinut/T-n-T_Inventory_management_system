@@ -1,0 +1,56 @@
+/* Dashboard page custom styles moved from inline HTML */
+
+.margin-top-2em {
+    margin-top: 2.2em;
+}
+
+.notification-options-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+}
+
+#notificationDetails {
+    display: none;
+}
+
+.sort-controls {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.reset-btn {
+    margin-left: 10px;
+    background: #ccc;
+}
+
+.category-list-item {
+    margin-bottom: 0.7em;
+}
+
+.category-list-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin-top: 0.2em;
+}
+
+.delete-btn {
+    margin-left: 10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
+.quantity-input {
+    width: 70px;
+    margin: 2px;
+}
+
+.notification-custom {
+    color: blue;
+}
