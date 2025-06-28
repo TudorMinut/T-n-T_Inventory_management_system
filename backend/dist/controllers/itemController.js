@@ -276,8 +276,12 @@ const updateItem = async (req, res, id) => {
 };
 exports.updateItem = updateItem;
 const deleteItem = async (res, id) => {
+    const client = await database_1.default.connect();
     try {
-        const result = await database_1.default.query("DELETE FROM items WHERE id = $1", [id]);
+        await client.query('BEGIN');
+        await client.query("DELETE FROM notifications WHERE item_id = $1", [id]);
+        const result = await client.query("DELETE FROM items WHERE id = $1", [id]);
+        await client.query('COMMIT');
         if (result.rowCount && result.rowCount > 0) {
             res.writeHead(204, { 'Content-Type': 'application/json' });
             res.end();
@@ -288,9 +292,13 @@ const deleteItem = async (res, id) => {
         }
     }
     catch (error) {
+        await client.query('ROLLBACK');
         console.error('Error in deleteItem:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la ștergerea articolului" }));
+    }
+    finally {
+        client.release();
     }
 };
 exports.deleteItem = deleteItem;

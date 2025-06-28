@@ -34,25 +34,51 @@ export const importJson = async (req: IncomingMessage, res: ServerResponse) => {
     try {
         const body = await getRequestBody(req);
         const jsonData = JSON.parse(body);
-        for (const item of jsonData) {
-            if (item.name && item.quantity) {
-                let categoryId = null;
-                if (item.category) {
-                    let categoryResult = await pool.query('SELECT id FROM categories WHERE name = $1', [item.category]);
-                    if (categoryResult.rows.length > 0) {
-                        categoryId = categoryResult.rows[0].id;
-                    } else {
-                        const newCategory = await pool.query('INSERT INTO categories (name) VALUES ($1) RETURNING id', [item.category]);
-                        categoryId = newCategory.rows[0].id;
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Găsește cel mai mare ID curent pentru categorii
+            const maxCategoryResult = await client.query('SELECT COALESCE(MAX(id), 0) as max_id FROM categories');
+            let nextCategoryId = maxCategoryResult.rows[0].max_id + 1;
+
+            // Găsește cel mai mare ID curent pentru articole
+            const maxItemResult = await client.query('SELECT COALESCE(MAX(id), 0) as max_id FROM items');
+            let nextItemId = maxItemResult.rows[0].max_id + 1;
+
+            for (const item of jsonData) {
+                if (item.name && item.quantity) {
+                    let categoryId = null;
+                    if (item.category) {
+                        // Verifică dacă categoria există deja
+                        let categoryResult = await client.query('SELECT id FROM categories WHERE name = $1', [item.category]);
+                        if (categoryResult.rows.length > 0) {
+                            categoryId = categoryResult.rows[0].id;
+                        } else {
+                            // Creează categoria cu ID specificat
+                            const newCategory = await client.query('INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING id', [nextCategoryId, item.category]);
+                            categoryId = newCategory.rows[0].id;
+                            nextCategoryId++;
+                        }
                     }
+                    // Inserează articolul cu ID specificat
+                    await client.query('INSERT INTO items (id, name, category_id, quantity, notification_threshold) VALUES ($1, $2, $3, $4, $5)',
+                        [nextItemId, item.name, categoryId, parseInt(item.quantity), item.notification_threshold || 5]
+                    );
+                    nextItemId++;
                 }
-                await pool.query('INSERT INTO items (name, category_id, quantity, notification_threshold) VALUES ($1, $2, $3, $4)',
-                    [item.name, categoryId, parseInt(item.quantity), item.notification_threshold || 5]
-                );
             }
+
+            await client.query('COMMIT');
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end('Import JSON finalizat cu succes.');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
         }
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('Import JSON finalizat cu succes.');
     } catch (error) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Eroare la importul JSON.');
