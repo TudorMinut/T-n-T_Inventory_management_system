@@ -17,7 +17,7 @@ export const handleCategoriesRoutes = async (req: IncomingMessage, res: ServerRe
         return deleteCategory(res, id);
     }
 
-    // Dacă nicio rută nu se potrivește
+    // Daca nicio ruta nu se potriveste
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru categorii" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru categorii" }));
 };

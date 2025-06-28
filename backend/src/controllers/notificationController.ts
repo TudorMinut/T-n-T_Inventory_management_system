@@ -1,7 +1,7 @@
 import { ServerResponse } from "http";
 import pool from "../config/database";
 
-// Funcție pentru a prelua toate notificările
+// Functie pentru a prelua toate notificarile
 export const getNotifications = async (res: ServerResponse) => {
     try {
         const result = await pool.query(
@@ -15,7 +15,7 @@ export const getNotifications = async (res: ServerResponse) => {
     } catch (error) {
         console.error(error);
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare internă la preluarea notificărilor." }));
+        res.end(JSON.stringify({ message: "Eroare interna la preluarea notificarilor." }));
     }
 };
 

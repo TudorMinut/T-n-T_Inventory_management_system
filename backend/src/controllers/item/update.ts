@@ -8,7 +8,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
     try {
         const body = await getRequestBody(req);
 
-        // Obținem articolul existent pentru a păstra datele curente
+        // Obtinem articolul existent pentru a pastra datele curente
         const existingResult = await pool.query(
             'SELECT * FROM items WHERE id = $1',
             [id]
@@ -16,13 +16,13 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
 
         if (existingResult.rows.length === 0) {
             res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Articolul nu a fost găsit" }));
+            res.end(JSON.stringify({ message: "Articolul nu a fost gasit" }));
             return;
         }
 
         const existingItem = existingResult.rows[0];
 
-        // Folosim valorile noi sau păstrăm cele existente
+        // Folosim valorile noi sau pastram cele existente
         const {
             name = existingItem.name,
             category_id = existingItem.category_id,
@@ -36,7 +36,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
             notification_message = existingItem.notification_message
         } = body;
 
-        // Validări de securitate doar pentru câmpurile modificate
+        // Validari de securitate doar pentru campurile modificate
         if (body.name !== undefined) {
             const sanitizedName = sanitizeAndValidateName(name);
             if (!sanitizedName) {
@@ -64,7 +64,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
             return;
         }
 
-        // Validări pentru notificările personalizate doar dacă sunt modificate
+        // Validari pentru notificarile personalizate doar daca sunt modificate
         let validatedNotificationType = notification_type;
         let validatedAfterMinutes = notification_after_minutes;
         let validatedIntervalMinutes = notification_interval_minutes;
@@ -117,7 +117,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
         );
 
         if (result.rows.length > 0) {
-            // Returnează articolul actualizat cu numele categoriei
+            // Returneaza articolul actualizat cu numele categoriei
             const finalItemResult = await pool.query(
                 `SELECT 
                     i.id, i.name, i.quantity, i.category_id, c.name as category_name,
@@ -131,7 +131,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
             );
             const updatedItem = finalItemResult.rows[0];
 
-            // Verifică și trimite notificare instant dacă e cazul
+            // Verifica si trimite notificare instant daca e cazul
             if (body.quantity !== undefined && updatedItem.quantity <= updatedItem.notification_threshold) {
                 await createAndSendStockNotification(updatedItem);
             }
@@ -140,7 +140,7 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
             res.end(JSON.stringify(updatedItem));
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Articolul nu a fost găsit" }));
+            res.end(JSON.stringify({ message: "Articolul nu a fost gasit" }));
         }
     } catch (error) {
         console.error('Error in updateItem:', error);

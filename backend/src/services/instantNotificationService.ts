@@ -1,9 +1,9 @@
 import pool from '../config/database';
 import { sendEmail } from '../services/emailService';
 
-// Creează și trimite instant notificare de stoc scăzut
+// Creaza si trimite instant notificare de stoc scazut
 export const createAndSendStockNotification = async (item: any) => {
-    const message = `Stoc redus pentru articolul: ${item.name}. Cantitate rămasă: ${item.quantity}.`;
+    const message = `Stoc redus pentru articolul: ${item.name}. Cantitate ramasa: ${item.quantity}.`;
     // Verifică dacă există deja o notificare recentă
     const { rows: existingNotifications } = await pool.query(
         'SELECT * FROM notifications WHERE item_id = $1 AND message = $2 AND notification_type = $3 AND created_at > NOW() - INTERVAL \'1 day\'',

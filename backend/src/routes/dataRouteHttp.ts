@@ -29,5 +29,5 @@ export const handleDataRoutes = async (req: IncomingMessage, res: ServerResponse
     }
 
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru import/export" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru import/export" }));
 };

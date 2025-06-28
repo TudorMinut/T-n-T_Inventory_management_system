@@ -14,5 +14,5 @@ export const handleStatisticsRoutes = async (req: IncomingMessage, res: ServerRe
     }
 
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru statistici" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru statistici" }));
 };

@@ -21,11 +21,11 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
             notification_message
         } = body;
 
-        // Validări de securitate
+        // Validari de securitate
         const sanitizedName = sanitizeAndValidateName(name);
         if (!sanitizedName) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Numele articolului trebuie să aibă între 2-100 caractere" }));
+            res.end(JSON.stringify({ message: "Numele articolului trebuie sa aiba intre 2-100 caractere" }));
             return;
         }
 
@@ -37,17 +37,17 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
 
         if (!validateNonNegativeInteger(quantity)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Cantitatea trebuie să fie un număr pozitiv" }));
+            res.end(JSON.stringify({ message: "Cantitatea trebuie sa fie un numar pozitiv" }));
             return;
         }
 
         if (!validateNonNegativeInteger(notification_threshold)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Pragul de notificare trebuie să fie un număr pozitiv" }));
+            res.end(JSON.stringify({ message: "Pragul de notificare trebuie sa fie un numar pozitiv" }));
             return;
         }
 
-        // Validări pentru notificările personalizate
+        // Validari pentru notificarile personalizate
         let validatedNotificationType: string | null = null;
         let validatedAfterMinutes: number | null = null;
         let validatedIntervalMinutes: number | null = null;
@@ -109,12 +109,12 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
         if (custom_notification_enabled) {
             await scheduleCustomNotification(newItem);
         }
-        // Notificare instant dacă deja la creare cantitatea e sub prag
+        // Notificare instant daca deja la creare cantitatea e sub prag
         if (quantity <= notification_threshold) {
             await createAndSendStockNotification(newItem);
         }
 
-        // Returnează articolul nou creat cu numele categoriei
+        // Returneaza articolul nou creat cu numele categoriei
         const finalItemResult = await pool.query(
             `SELECT 
                 i.id, i.name, i.quantity, i.category_id, c.name as category_name,

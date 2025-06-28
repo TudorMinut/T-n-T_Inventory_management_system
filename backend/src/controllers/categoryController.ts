@@ -20,7 +20,7 @@ export const createCategory = async (req: IncomingMessage, res: ServerResponse) 
         const body = await getRequestBody(req);
         const { name } = body;
 
-        // Validări de securitate
+        // Validari de securitate
         const sanitizedName = sanitizeAndValidateName(name);
         if (!sanitizedName) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -28,7 +28,7 @@ export const createCategory = async (req: IncomingMessage, res: ServerResponse) 
             return;
         }
 
-        // Găsește cel mai mic id liber
+        // Gaseste cel mai mic id liber
         const idResult = await pool.query('SELECT id FROM categories ORDER BY id ASC');
         let newId = 1;
         for (const row of idResult.rows) {
@@ -76,7 +76,7 @@ export const updateCategory = async (req: IncomingMessage, res: ServerResponse, 
 
 export const deleteCategory = async (res: ServerResponse, id: number) => {
     try {
-        // Verifică dacă categoria există
+        // Verifica daca categoria exista
         const categoryCheck = await pool.query('SELECT id, name FROM categories WHERE id = $1', [id]);
         if (categoryCheck.rows.length === 0) {
             res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -86,29 +86,29 @@ export const deleteCategory = async (res: ServerResponse, id: number) => {
 
         const categoryName = categoryCheck.rows[0].name;
 
-        // Nu permite ștergerea categoriei "Necategorizate"
+        // Nu permite stergerea categoriei "Necategorizate"
         if (categoryName.toLowerCase() === 'necategorizate') {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: "Nu se poate șterge categoria 'Necategorizate'" }));
             return;
         }
 
-        // Găsește categoria "Necategorizate"
+        // Gaseste categoria "Necategorizate"
         const uncategorizedResult = await pool.query('SELECT id FROM categories WHERE LOWER(name) = $1', ['necategorizate']);
         let uncategorizedId;
 
         if (uncategorizedResult.rows.length === 0) {
-            // Creează categoria "Necategorizate" dacă nu există
+            // Creaza categoria "Necategorizate" daca nu exista
             const newCategory = await pool.query('INSERT INTO categories (name) VALUES ($1) RETURNING id', ['Necategorizate']);
             uncategorizedId = newCategory.rows[0].id;
         } else {
             uncategorizedId = uncategorizedResult.rows[0].id;
         }
 
-        // Mută toate articolele din categoria care urmează să fie ștearsă în categoria "Necategorizate"
+        // Muta toate articolele din categoria care urmeaza sa fie stearsa in categoria "Necategorizate"
         await pool.query('UPDATE items SET category_id = $1 WHERE category_id = $2', [uncategorizedId, id]);
 
-        // Șterge categoria
+        // Sterge categoria
         const result = await pool.query('DELETE FROM categories WHERE id = $1', [id]);
 
         if (result.rowCount && result.rowCount > 0) {

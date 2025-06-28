@@ -6,5 +6,5 @@ export const handleManualNotificationRoute = async (req: IncomingMessage, res: S
         return createManualNotification(req, res);
     }
     res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Rută negăsită pentru notificare manuală' }));
+    res.end(JSON.stringify({ message: 'Ruta negasita pentru notificare manuala' }));
 };

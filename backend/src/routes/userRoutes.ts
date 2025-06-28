@@ -30,7 +30,7 @@ export const handleUserRoutes = async (req: IncomingMessage, res: ServerResponse
         return deleteUser(userId, res);
     }
 
-    // Dacă nicio rută nu se potrivește
+    // Daca nicio ruta nu se potriveste
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Rută negăsită pentru utilizatori" }));
+    res.end(JSON.stringify({ message: "Ruta negasita pentru utilizatori" }));
 };

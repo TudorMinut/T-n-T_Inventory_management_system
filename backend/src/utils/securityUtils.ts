@@ -1,7 +1,7 @@
-// Utilitare de securitate pentru prevenirea atacurilor XSS și validare input-uri
+// Utilitare de securitate pentru prevenirea atacurilor XSS si validare input-uri
 
 /**
- * Sanitizează un string pentru a preveni XSS
+ * Sanitizeaza un string pentru a preveni XSS
  * @param input - String-ul de sanitizat
  * @returns String sanitizat
  */
@@ -17,9 +17,9 @@ export const sanitizeHtml = (input: string): string => {
 };
 
 /**
- * Validează un email
+ * Valideaza un email
  * @param email - Email-ul de validat
- * @returns true dacă este valid
+ * @returns true daca este valid
  */
 export const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,20 +27,20 @@ export const validateEmail = (email: string): boolean => {
 };
 
 /**
- * Validează lungimea unui string
+ * Valideaza lungimea unui string
  * @param str - String-ul de validat
- * @param minLength - Lungimea minimă
- * @param maxLength - Lungimea maximă
- * @returns true dacă este valid
+ * @param minLength - Lungimea minima
+ * @param maxLength - Lungimea maxima
+ * @returns true daca este valid
  */
 export const validateStringLength = (str: string, minLength: number = 1, maxLength: number = 255): boolean => {
     return !!(str && str.trim().length >= minLength && str.trim().length <= maxLength);
 };
 
 /**
- * Validează un număr întreg pozitiv
+ * Valideaza un numar intreg pozitiv
  * @param num - Numărul de validat
- * @returns true dacă este valid
+ * @returns true daca este valid
  */
 export const validatePositiveInteger = (num: any): boolean => {
     const parsed = parseInt(num);
@@ -48,9 +48,9 @@ export const validatePositiveInteger = (num: any): boolean => {
 };
 
 /**
- * Validează un număr întreg non-negativ
+ * Valideaza un numar intreg non-negativ
  * @param num - Numărul de validat
- * @returns true dacă este valid
+ * @returns true daca este valid
  */
 export const validateNonNegativeInteger = (num: any): boolean => {
     const parsed = parseInt(num);
@@ -58,23 +58,23 @@ export const validateNonNegativeInteger = (num: any): boolean => {
 };
 
 /**
- * Sanitizează și validează input-ul pentru numele categoriilor/articolelor
+ * Sanitizeaza si valideaza input-ul pentru numele categoriilor/articolelor
  * @param name - Numele de validat
- * @returns string sanitizat sau null dacă invalid
+ * @returns string sanitizat sau null daca invalid
  */
 export const sanitizeAndValidateName = (name: string): string | null => {
     if (!validateStringLength(name, 2, 100)) {
         return null;
     }
-    // Elimină spațiile multiple și sanitizează
+    // Elimina spatiile multiple si sanitizeaza
     const sanitized = sanitizeHtml(name.trim().replace(/\s+/g, ' '));
     return sanitized;
 };
 
 /**
- * Validează parola - cel puțin 6 caractere
+ * Valideaza parola - cel putin 6 caractere
  * @param password - Parola de validat
- * @returns true dacă este validă
+ * @returns true daca este valida
  */
 export const validatePassword = (password: string): boolean => {
     return !!(password && password.length >= 6 && password.length <= 128);

@@ -1,20 +1,20 @@
 import pool from '../config/database';
-import { sendEmail } from './emailService'; // Presupunem că acest serviciu există și este configurat
+import { sendEmail } from './emailService'; // Presupunem ca acest serviciu exista si este configurat
 
-// Serviciu pentru verificarea stocurilor și generarea de notificări
+// Serviciu pentru verificarea stocurilor si generarea de notificari
 export const checkStockAndNotify = async () => {
     try {
-        // Verifică notificările de stoc redus
+        // Verifica notificarile de stoc redus
         await checkLowStockNotifications();
 
-        // Verifică notificările personalizate programate
+        // Verifica notificarile personalizate programate
         await checkScheduledNotifications();
     } catch (error) {
         console.error("Eroare la verificarea notificărilor:", error);
     }
 };
 
-// Funcție pentru verificarea stocurilor reduse
+// Functie pentru verificarea stocurilor reduse
 const checkLowStockNotifications = async () => {
     try {
         // Preluare articole cu stoc redus
@@ -24,25 +24,25 @@ const checkLowStockNotifications = async () => {
 
         // Preluare email-uri utilizatori
         const { rows: users } = await pool.query('SELECT email FROM users');
-        const userEmails = users.map(user => user.email).filter(email => email); // Filtrează email-urile nule
+        const userEmails = users.map(user => user.email).filter(email => email); // Filtreaza email-urile nule
 
         for (const item of lowStockItems) {
-            const message = `Stoc redus pentru articolul: ${item.name}. Cantitate rămasă: ${item.quantity}.`;
+            const message = `Stoc redus pentru articolul: ${item.name}. Cantitate ramasa: ${item.quantity}.`;
 
-            // Verifică dacă o notificare pentru acest articol și acest prag a fost deja trimisă recent
+            // Verifica daca o notificare pentru acest articol si acest prag a fost deja trimisa recent
             const { rows: existingNotifications } = await pool.query(
                 'SELECT * FROM notifications WHERE item_id = $1 AND message = $2 AND notification_type = $3 AND created_at > NOW() - INTERVAL \'1 day\'',
                 [item.id, message, 'stock_low']
             );
 
             if (existingNotifications.length === 0) {
-                // Inserează o nouă notificare în baza de date
+                // Insereaza o noua notificare in baza de date
                 await pool.query(
                     'INSERT INTO notifications (item_id, message, notification_type, is_read) VALUES ($1, $2, $3, $4)',
                     [item.id, message, 'stock_low', false]
                 );
 
-                // Trimite email către toți utilizatorii
+                // Trimite email catre toti utilizatorii
                 for (const email of userEmails) {
                     try {
                         await sendEmail(
@@ -61,12 +61,12 @@ const checkLowStockNotifications = async () => {
     }
 };
 
-// Funcție pentru verificarea notificărilor personalizate programate
+// Functie pentru verificarea notificarilor personalizate programate
 const checkScheduledNotifications = async () => {
     try {
         const now = new Date();
 
-        // Găsește notificările care trebuie să fie trimise acum
+        // Gaseste notificarile care trebuie sa fie trimise acum
         const { rows: dueNotifications } = await pool.query(
             `SELECT n.*, i.name as item_name 
              FROM notifications n 

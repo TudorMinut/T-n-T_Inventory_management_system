@@ -2,7 +2,7 @@ import pool from '../../config/database';
 import { ServerResponse } from 'http';
 import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeInteger } from '../../utils/securityUtils';
 
-// Funcție pentru programarea notificărilor personalizate
+// Functie pentru programarea notificarilor personalizate
 export const scheduleCustomNotification = async (item: any) => {
     try {
         let scheduledTime: Date | null = null;
@@ -41,13 +41,13 @@ export const scheduleCustomNotification = async (item: any) => {
     }
 };
 
-// Utilitar pentru validare rapidă
+// Utilitar pentru validare rapida
 export function validateItemFields(fields: any, res: ServerResponse): boolean {
     if (fields.name !== undefined) {
         const sanitizedName = sanitizeAndValidateName(fields.name);
         if (!sanitizedName) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Numele articolului trebuie să aibă între 2-100 caractere" }));
+            res.end(JSON.stringify({ message: "Numele articolului trebuie sa aiba intre 2-100 caractere" }));
             return false;
         }
     }
@@ -58,12 +58,12 @@ export function validateItemFields(fields: any, res: ServerResponse): boolean {
     }
     if (fields.quantity !== undefined && !validateNonNegativeInteger(fields.quantity)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Cantitatea trebuie să fie un număr pozitiv" }));
+        res.end(JSON.stringify({ message: "Cantitatea trebuie sa fie un numar pozitiv" }));
         return false;
     }
     if (fields.notification_threshold !== undefined && !validateNonNegativeInteger(fields.notification_threshold)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Pragul de notificare trebuie să fie un număr pozitiv" }));
+        res.end(JSON.stringify({ message: "Pragul de notificare trebuie sa fie un numar pozitiv" }));
         return false;
     }
     return true;

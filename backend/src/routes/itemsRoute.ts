@@ -20,7 +20,7 @@ export const handleItemsRoutes = async (req: IncomingMessage, res: ServerRespons
     return deleteItem(res, id);
   }
 
-  // Dacă nicio rută nu se potrivește
+  // Daca nicio ruta nu se potriveste
   res.writeHead(404, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ message: "Rută negăsită pentru articole" }));
+  res.end(JSON.stringify({ message: "Ruta negasita pentru articole" }));
 };

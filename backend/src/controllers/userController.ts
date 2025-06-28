@@ -6,7 +6,7 @@ import { validateEmail, validatePassword, sanitizeAndValidateName } from "../uti
 export const registerUser = async (data: any, res: ServerResponse) => {
     const { username, email, password } = data;
 
-    // Validări de securitate
+    // Validari de securitate
     if (!validateEmail(email)) {
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Email invalid" }));
@@ -15,14 +15,14 @@ export const registerUser = async (data: any, res: ServerResponse) => {
 
     if (!validatePassword(password)) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Parola trebuie să aibă între 6-128 caractere" }));
+        res.end(JSON.stringify({ message: "Parola trebuie sa aiba intre 6-128 caractere" }));
         return;
     }
 
     const sanitizedUsername = sanitizeAndValidateName(username);
     if (!sanitizedUsername) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Numele de utilizator trebuie să aibă între 2-100 caractere" }));
+        res.end(JSON.stringify({ message: "Numele de utilizator trebuie sa aiba intre 2-100 caractere" }));
         return;
     }
 
@@ -38,17 +38,17 @@ export const registerUser = async (data: any, res: ServerResponse) => {
         res.end(JSON.stringify(result.rows[0]));
     } catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare la înregistrare" }));
+        res.end(JSON.stringify({ message: "Eroare la inregistrare" }));
     }
 };
 
 export const loginUser = async (data: any, res: ServerResponse) => {
     const { email, password } = data;
 
-    // Validări de securitate
+    // Validari de securitate
     if (!validateEmail(email) || !password) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Email sau parolă invalide" }));
+        res.end(JSON.stringify({ message: "Email sau parola invalide" }));
         return;
     }
 
@@ -66,11 +66,11 @@ export const loginUser = async (data: any, res: ServerResponse) => {
                 }));
             } else {
                 res.writeHead(401, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Email sau parolă incorectă" }));
+                res.end(JSON.stringify({ message: "Email sau parola incorecta" }));
             }
         } else {
             res.writeHead(404, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Utilizatorul nu a fost găsit" }));
+            res.end(JSON.stringify({ message: "Utilizatorul nu a fost gasit" }));
         }
     } catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
@@ -95,7 +95,7 @@ export const promoteUser = async (data: any, res: ServerResponse) => {
     const { userId } = data;
     if (!userId) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        res.end(JSON.stringify({ message: "ID utilizator lipsa" }));
         return;
     }
     try {
@@ -112,15 +112,15 @@ export const promoteUser = async (data: any, res: ServerResponse) => {
 export const deleteUser = async (userId: number, res: ServerResponse) => {
     if (!userId) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "ID utilizator lipsă" }));
+        res.end(JSON.stringify({ message: "ID utilizator lipsa" }));
         return;
     }
     try {
         await pool.query('DELETE FROM users WHERE id = $1', [userId]);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Utilizator șters" }));
+        res.end(JSON.stringify({ message: "Utilizator sters" }));
     } catch (error) {
         res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Eroare la ștergere" }));
+        res.end(JSON.stringify({ message: "Eroare la stergere" }));
     }
 };

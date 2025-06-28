@@ -150,6 +150,6 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     // 404 - Not found (this handles all unmatched routes)
     res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Ruta inexistentă" }));
+    res.end(JSON.stringify({ message: "Ruta inexistenta" }));
     return; // Add this explicit return
 };

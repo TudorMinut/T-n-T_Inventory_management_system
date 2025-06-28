@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import pool from '../config/database';
 
-// Helper pentru a trimite fișiere
+// Helper pentru a trimite fisiere
 function sendFile(res: ServerResponse, content: string | Buffer, contentType: string, filename: string) {
     res.writeHead(200, {
         'Content-Type': contentType,
@@ -10,7 +10,7 @@ function sendFile(res: ServerResponse, content: string | Buffer, contentType: st
     res.end(content);
 }
 
-// Pentru import, trebuie să citești body-ul ca text (nu multipart)
+// Pentru import, trebuie sa citesti body-ul ca text (nu multipart)
 function getRequestBody(req: IncomingMessage): Promise<string> {
     return new Promise((resolve, reject) => {
         let body = '';
@@ -39,11 +39,11 @@ export const importJson = async (req: IncomingMessage, res: ServerResponse) => {
         try {
             await client.query('BEGIN');
 
-            // Găsește cel mai mare ID curent pentru categorii
+            // Gaseste cel mai mare ID curent pentru categorii
             const maxCategoryResult = await client.query('SELECT COALESCE(MAX(id), 0) as max_id FROM categories');
             let nextCategoryId = maxCategoryResult.rows[0].max_id + 1;
 
-            // Găsește cel mai mare ID curent pentru articole
+            // Gaseste cel mai mare ID curent pentru articole
             const maxItemResult = await client.query('SELECT COALESCE(MAX(id), 0) as max_id FROM items');
             let nextItemId = maxItemResult.rows[0].max_id + 1;
 
@@ -51,18 +51,18 @@ export const importJson = async (req: IncomingMessage, res: ServerResponse) => {
                 if (item.name && item.quantity) {
                     let categoryId = null;
                     if (item.category) {
-                        // Verifică dacă categoria există deja
+                        // Verifica daca categoria exista deja
                         let categoryResult = await client.query('SELECT id FROM categories WHERE name = $1', [item.category]);
                         if (categoryResult.rows.length > 0) {
                             categoryId = categoryResult.rows[0].id;
                         } else {
-                            // Creează categoria cu ID specificat
+                            // Creaza categoria cu ID specificat
                             const newCategory = await client.query('INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING id', [nextCategoryId, item.category]);
                             categoryId = newCategory.rows[0].id;
                             nextCategoryId++;
                         }
                     }
-                    // Inserează articolul cu ID specificat
+                    // Insereaza articolul cu ID specificat
                     await client.query('INSERT INTO items (id, name, category_id, quantity, notification_threshold) VALUES ($1, $2, $3, $4, $5)',
                         [nextItemId, item.name, categoryId, parseInt(item.quantity), item.notification_threshold || 5]
                     );

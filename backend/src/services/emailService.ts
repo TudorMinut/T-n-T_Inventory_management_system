@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer';
 
-// Configurația transportorului de email
-// Înlocuiește cu detaliile tale SMTP
+// Configuratia transportorului de email
+// Inlocuieste cu detaliile tale SMTP
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
@@ -30,8 +30,8 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
         });
 
         console.log('Email trimis: %s', info.messageId);
-        // Previzualizează emailul trimis (doar pentru Ethereal)
-        // console.log('Previzualizează URL: %s', nodemailer.getTestMessageUrl(info));
+        // Previzualizeaza emailul trimis (doar pentru Ethereal)
+        // console.log('Previzualizeaza URL: %s', nodemailer.getTestMessageUrl(info));
     } catch (error) {
         console.error('Eroare la trimiterea emailului:', error);
     }

@@ -82,9 +82,9 @@ const initializeDatabase = async () => {
 // Initialize database on startup
 initializeDatabase();
 
-// Rulează serviciul de notificare la fiecare 30 de secunde
+// Ruleaza serviciul de notificare la fiecare 30 de secunde
 setInterval(() => {
-    console.log("Verificare stocuri pentru notificări...");
+    console.log("Verificare stocuri pentru notificari...");
     checkStockAndNotify();
 }, 30000); // 30000 ms = 30 secunde
 
