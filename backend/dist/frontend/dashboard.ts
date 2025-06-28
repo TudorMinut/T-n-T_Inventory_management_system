@@ -1,6 +1,6 @@
 // Verificare autentificare si initializare
 if (!localStorage.getItem('userId')) window.location.href = '/';
-if (localStorage.getItem('isAdmin')) document.getElementById('adminBtn')?.setAttribute('style', 'display:inline-block');
+if (localStorage.getItem('isAdmin')) document.getElementById('adminBtn')?.classList.add('admin-btn-visible');
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
@@ -13,14 +13,23 @@ const setHTML = (el: HTMLElement | null, html: string) => { if (el) el.innerHTML
 
 // Notificare personalizata
 $('customNotificationEnabled')?.addEventListener('change', function (this: HTMLInputElement) {
-    if ($('notificationDetails')) $('notificationDetails')!.style.display = this.checked ? 'block' : 'none';
+    if ($('notificationDetails')) {
+        $('notificationDetails')!.classList.toggle('display-block', this.checked);
+        $('notificationDetails')!.classList.toggle('display-none', !this.checked);
+    }
 });
 $('notificationType')?.addEventListener('change', function (this: HTMLSelectElement) {
     ['afterTimeOptions', 'periodicOptions', 'fixedDateOptions'].forEach(id => {
-        if ($(id)) $(id)!.style.display = 'none';
+        if ($(id)) {
+            $(id)!.classList.remove('display-block');
+            $(id)!.classList.add('display-none');
+        }
     });
     const showMap: any = { 'after_time': 'afterTimeOptions', 'periodic': 'periodicOptions', 'fixed_date': 'fixedDateOptions' };
-    if (showMap[this.value] && $(showMap[this.value])) $(showMap[this.value])!.style.display = 'block';
+    if (showMap[this.value] && $(showMap[this.value])) {
+        $(showMap[this.value])!.classList.remove('display-none');
+        $(showMap[this.value])!.classList.add('display-block');
+    }
 });
 
 // API helpers
@@ -61,8 +70,8 @@ function updateSortIndicators() {
     ['sortName', 'sortQuantity', 'sortCategory', 'sortDate'].forEach(id => {
         const btn = $(id);
         if (btn) {
-            btn.style.background = '';
-            btn.style.color = '';
+            btn.classList.remove('sort-btn-active');
+            btn.classList.add('sort-btn-inactive');
         }
     });
 
@@ -76,8 +85,8 @@ function updateSortIndicators() {
 
         const activeBtn = $(btnMap[currentSort.field]);
         if (activeBtn) {
-            activeBtn.style.background = '#007cba';
-            activeBtn.style.color = 'white';
+            activeBtn.classList.remove('sort-btn-inactive');
+            activeBtn.classList.add('sort-btn-active');
             const arrow = currentSort.direction === 'asc' ? '↑' : '↓';
             activeBtn.textContent = activeBtn.textContent?.replace(/[↑↓↕]/g, '') + ' ' + arrow;
         }
@@ -217,7 +226,7 @@ $('itemForm')?.addEventListener('submit', async function (e) {
             if (notifType.value === 'fixed_date') data.notification_fixed_date = new Date(($('fixedDateTime') as HTMLInputElement)?.value).toISOString();
         }
     }
-    try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.style.display = 'none'; fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adaugarea articolului')); }
+    try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.classList.add('display-none'); fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adaugarea articolului')); }
 });
 
 // Initializare

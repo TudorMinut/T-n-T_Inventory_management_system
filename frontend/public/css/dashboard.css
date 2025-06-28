@@ -157,3 +157,25 @@
     margin-bottom: 1.5em;
     /* creste spatiul sub label fata de butonul Adauga articol */
 }
+
+.admin-btn-visible {
+    display: inline-block !important;
+}
+
+.sort-btn-active {
+    background: #007cba !important;
+    color: white !important;
+}
+
+.sort-btn-inactive {
+    background: none !important;
+    color: inherit !important;
+}
+
+.display-block {
+    display: block !important;
+}
+
+.display-none {
+    display: none !important;
+}
