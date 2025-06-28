@@ -157,3 +157,39 @@
     margin-bottom: 1.5em;
     /* crește spațiul sub label față de butonul Adauga articol */
 }
+
+/* Hide admin button by default */
+#adminBtn {
+    display: none;
+}
+
+/* Margin for notification section */
+.margin-top-2em {
+    margin-top: 2.2em;
+}
+
+/* Notification options label */
+.notification-flex {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+}
+
+/* Hide by default, show with JS */
+.hide {
+    display: none;
+}
+
+/* Reset button style */
+.reset-btn {
+    margin-left: 10px;
+    background: #ccc;
+}
+
+/* Footer documentation section */
+.footer-doc-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

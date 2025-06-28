@@ -133,11 +133,11 @@ function displaySortedItems() {
             <strong>${item.name}</strong> 
             (Categorie: ${item.category_name || 'Necategorizat'}) 
             <br>
-            Cantitate: <input type='number' value='${item.quantity || 0}' min='0' style='width:70px; margin: 2px;' onchange='updateItemQuantity(${item.id}, this.value)'>
+            Cantitate: <input type='number' value='${item.quantity || 0}' min='0' class='quantity-input' onchange='updateItemQuantity(${item.id}, this.value)'>
             | Prag notificare: ${item.notification_threshold || 0}
             ${item.created_at ? `| Adăugat: ${new Date(item.created_at).toLocaleDateString('ro-RO')}` : ''}
-            ${item.custom_notification_enabled ? ` <span style="color: blue;">[Notificare: ${item.notification_type}]</span>` : ''}
-            <button onclick="deleteItem(${item.id})" style="margin-left: 10px; background: #ff4444; color: white; border: none; padding: 2px 8px; border-radius: 3px;">Șterge</button>
+            ${item.custom_notification_enabled ? ` <span class="notification-custom">[Notificare: ${item.notification_type}]</span>` : ''}
+            <button onclick="deleteItem(${item.id})" class="delete-btn">Șterge</button>
         </li>`
     ).join(''));
 }
@@ -146,9 +146,9 @@ function displaySortedItems() {
 async function fetchCategories() {
     const categories = await api<any[]>('/api/categories');
     setHTML($('categoriesList'), categories.map(cat =>
-        `<li style="margin-bottom: 0.7em;">
+        `<li class="category-list-item">
             <span>${cat.id}: ${cat.name}</span>
-            <div style="display: flex; flex-direction: row; gap: 0.5em; margin-top: 0.2em;">
+            <div class="category-list-actions">
                 ${cat.name.toLowerCase() !== 'necategorizate' ? `<button style="width: 110px;" onclick="deleteCategory(${cat.id})">Șterge</button>` : ''}
                 <button style="width: 110px;" onclick="editCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}')">Editează</button>
             </div>
