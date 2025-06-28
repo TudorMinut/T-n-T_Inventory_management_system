@@ -1,7 +1,9 @@
 /* Reguli generale, culori, fonturi, layout de bază */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+
 body,
 html {
-    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
     background: #f7f7f7;
     margin: 0;
     padding: 0;
