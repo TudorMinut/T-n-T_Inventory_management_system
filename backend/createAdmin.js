@@ -12,10 +12,10 @@ async function createAdminUser() {
         );
 
         console.log('Admin user created successfully:', result.rows[0]);
+        process.exit(0);
     } catch (error) {
-        if (error.code !== '23505') { // Ignoră eroarea dacă utilizatorul deja există
-            console.error('Error creating admin user:', error);
-        }
+        console.error('Error creating admin user:', error);
+        process.exit(1);
     }
 }
 

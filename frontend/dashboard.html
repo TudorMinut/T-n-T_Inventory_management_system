@@ -17,7 +17,7 @@
             </div>
             <nav class="header-nav">
                 <button onclick="window.location.href='/statistics'" class="btn-primary">Statistici</button>
-                <button id="adminBtn" class="admin-btn" onclick="window.location.href='/admin'">Admin</button>
+                <button id="adminBtn" style="display:none" onclick="window.location.href='/admin'">Admin</button>
                 <button id="logoutBtn" class="btn-danger">Deconectare</button>
             </nav>
         </div>
@@ -37,18 +37,15 @@
         <h1>Gestionare Articole</h1>
         <form id="itemForm">
             <label>Denumire articol: <input type="text" id="itemName" required></label>
-            <label>Categorie: <select id="itemCategory" required>
-                    <option value="" disabled selected>Selectează o categorie</option>
-                </select></label>
+            <label>Categorie: <select id="itemCategory" required></select></label>
             <label>Cantitate: <input type="number" id="itemQuantity" required></label>
             <label>Prag notificare: <input type="number" id="itemThreshold" value="5" required></label>
 
-            <div class="margin-top-2em"></div>
+            <div style="margin-top: 2.2em;"></div>
             <div class="notification-options">
-                <label class="notification-options-label"><input type="checkbox"
-                        id="customNotificationEnabled">Activează
-                    notificare personalizată</label>
-                <div id="notificationDetails">
+                <label style="display: flex; align-items: center; gap: 0.7em;"><input type="checkbox"
+                        id="customNotificationEnabled">Activează notificare personalizată</label>
+                <div id="notificationDetails" style="display:none">
                     <label>Tip notificare:
                         <select id="notificationType">
                             <option value="after_time">După un timp specificat</option>
@@ -58,10 +55,10 @@
                     </label>
                     <div id="afterTimeOptions"><label>Notifică după (minute): <input type="number" id="afterMinutes"
                                 min="1"></label></div>
-                    <div id="periodicOptions" class="hide"><label>Interval repetiție (minute): <input type="number"
-                                id="intervalMinutes" min="1"></label></div>
-                    <div id="fixedDateOptions" class="hide"><label>Data și ora notificării: <input type="datetime-local"
-                                id="fixedDateTime"></label></div>
+                    <div id="periodicOptions" style="display:none"><label>Interval repetiție (minute): <input
+                                type="number" id="intervalMinutes" min="1"></label></div>
+                    <div id="fixedDateOptions" style="display:none"><label>Data și ora notificării: <input
+                                type="datetime-local" id="fixedDateTime"></label></div>
                     <label>Mesaj personalizat: <input type="text" id="customMessage"
                             placeholder="Mesaj opțional pentru notificare"></label>
                 </div>
@@ -69,13 +66,13 @@
             <button type="submit">Adauga articol</button>
         </form>
 
-        <div class="sort-controls">
+        <div class="sort-controls" style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
             <strong>Sortează după:</strong>
             <button onclick="sortItems('name')" id="sortName">Nume ↕</button>
             <button onclick="sortItems('quantity')" id="sortQuantity">Cantitate ↕</button>
             <button onclick="sortItems('category')" id="sortCategory">Categorie ↕</button>
             <button onclick="sortItems('created_at')" id="sortDate">Data adăugării ↕</button>
-            <button onclick="resetSort()" class="reset-btn">Reset</button>
+            <button onclick="resetSort()" style="margin-left: 10px; background: #ccc;">Reset</button>
         </div>
 
         <ul id="itemsList"></ul>
@@ -99,12 +96,12 @@
                 <h3>Realizat de</h3>
                 <p>Tudor Minut și Tudor Tugui</p>
             </div>
-            <div class="footer-section footer-doc-center">
-                <a href="/README.md" class="documentation-btn" target="_blank">Documentație</a>
+            <div class="footer-section"
+                style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Resource Web Planner.</p>
+            <p>&copy; 2025 Resource Web Planner. Toate drepturile rezervate.</p>
         </div>
     </footer>
 
