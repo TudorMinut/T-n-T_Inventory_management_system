@@ -204,11 +204,14 @@ $('itemForm')?.addEventListener('submit', async function (e) {
     if (!itemName || !itemCategory || !itemQuantity || !itemThreshold) return;
     const data: any = { name: itemName.value, category_id: itemCategory.value, quantity: itemQuantity.value, notification_threshold: itemThreshold.value };
     if (customNotification && customNotification.checked) {
-        const notifType = $('notificationType') as HTMLSelectElement, customMessage = $('customMessage') as HTMLInputElement;
+        const notifType = $('notificationType') as HTMLSelectElement, customMessage = $('customMessage') as HTMLInputElement, notificationForSelf = $('notificationForSelf') as HTMLInputElement;
         if (notifType) {
             data.custom_notification_enabled = true;
             data.notification_type = notifType.value;
             if (customMessage) data.notification_message = customMessage.value;
+            if (notificationForSelf && notificationForSelf.checked) {
+                data.notification_user_id = localStorage.getItem('userId');
+            }
             if (notifType.value === 'after_time') data.notification_after_minutes = parseInt(($('afterMinutes') as HTMLInputElement)?.value) || 60;
             if (notifType.value === 'periodic') data.notification_interval_minutes = parseInt(($('intervalMinutes') as HTMLInputElement)?.value) || 60;
             if (notifType.value === 'fixed_date') data.notification_fixed_date = new Date(($('fixedDateTime') as HTMLInputElement)?.value).toISOString();

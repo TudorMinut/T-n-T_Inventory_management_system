@@ -58,10 +58,11 @@
                                 min="1"></label></div>
                     <div id="periodicOptions" style="display:none"><label>Interval repetiție (minute): <input
                                 type="number" id="intervalMinutes" min="1"></label></div>
-                    <div id="fixedDateOptions" style="display:none"><label>Data și ora notificării: <input
-                                type="datetime-local" id="fixedDateTime"></label></div>
-                    <label>Mesaj personalizat: <input type="text" id="customMessage"
-                            placeholder="Mesaj opțional pentru notificare"></label>
+                    <div id="fixedDateOptions" style="display:none;">
+                        <input type="datetime-local" id="fixedDateTime">
+                    </div>
+                    <label>Mesaj notificare (opțional): <input type="text" id="customMessage"></label>
+                    <label><input type="checkbox" id="notificationForSelf"> Doar pentru mine</label>
                 </div>
             </div>
             <button type="submit">Adauga articol</button>
