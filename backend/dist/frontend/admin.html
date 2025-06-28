@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/public/css/base.css">
+    <link rel="stylesheet" href="/public/css/admin.css">
+</head>
+
+<body>
+    <div class="header-buttons">
+        <button onclick="window.location.href='/dashboard'">Dashboard</button>
+    </div>
+    <h1>Administrare Utilizatori</h1>
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Actiuni</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <h2>Administrare Categorii</h2>
+    <ul id="adminCategoriesList"></ul>
+    <h2>Administrare Articole</h2>
+    <ul id="adminItemsList"></ul>
+    <div id="feedback" class="feedback"></div>
+    <script src="/public/admin.js"></script>
+</body>
+
+</html>

@@ -51,7 +51,7 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     // Fix the frontend path resolution for Render deployment
     const frontendPath = process.env.NODE_ENV === 'production'
-        ? path.join(__dirname, "..", "frontend")  // Corrected path for Render
+        ? path.join(__dirname, "frontend")  // Corrected path for Render (dist/frontend)
         : path.join(__dirname, "..", "..", "..", "frontend");
 
     // Serve login.html
