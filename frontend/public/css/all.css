@@ -1,0 +1,7 @@
+/* Importă toate CSS-urile pentru fallback sau dezvoltare */
+@import url('base.css');
+@import url('dashboard.css');
+@import url('login.css');
+@import url('admin.css');
+@import url('statistics.css');
+@import url('documentation.css');

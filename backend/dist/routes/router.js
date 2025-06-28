@@ -78,7 +78,7 @@ const router = (req, res) => {
     }
     const { url, method } = req;
     const frontendPath = process.env.NODE_ENV === 'production'
-        ? path.join(__dirname, "frontend")
+        ? path.join(__dirname, "..", "frontend")
         : path.join(__dirname, "..", "..", "..", "frontend");
     if ((url === "/" || url === "/login.html") && method === "GET") {
         const filePath = path.join(frontendPath, "login.html");
