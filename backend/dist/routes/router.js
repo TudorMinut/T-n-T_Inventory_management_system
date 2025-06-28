@@ -123,18 +123,33 @@ const router = (req, res) => {
     }
     if (url?.startsWith("/public/")) {
         const relativeUrl = url.substring(1);
-        const filePath = path.join(frontendPath, relativeUrl);
-        const ext = path.extname(filePath);
-        const contentTypes = {
-            ".css": "text/css",
-            ".js": "application/javascript",
-            ".ts": "application/javascript",
-            ".html": "text/html",
-            ".png": "image/png",
-            ".jpg": "image/jpeg",
-            ".gif": "image/gif"
-        };
-        const contentType = contentTypes[ext] || "application/octet-stream";
+        let filePath = path.join(frontendPath, relativeUrl);
+        let contentType;
+        if (!path.extname(filePath)) {
+            const jsFilePath = filePath + ".js";
+            if (fs.existsSync(jsFilePath)) {
+                filePath = jsFilePath;
+                contentType = "application/javascript";
+            }
+            else {
+                res.writeHead(404, { "Content-Type": "text/plain" });
+                res.end("Not found");
+                return;
+            }
+        }
+        else {
+            const ext = path.extname(filePath);
+            const contentTypes = {
+                ".css": "text/css",
+                ".js": "application/javascript",
+                ".ts": "application/javascript",
+                ".html": "text/html",
+                ".png": "image/png",
+                ".jpg": "image/jpeg",
+                ".gif": "image/gif"
+            };
+            contentType = contentTypes[ext] || "application/octet-stream";
+        }
         serveStaticFile(filePath, contentType, res);
         return;
     }
