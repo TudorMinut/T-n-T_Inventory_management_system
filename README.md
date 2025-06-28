@@ -44,3 +44,16 @@ Aplicatie web pentru gestionarea articolelor, consumabilelor si pieselor de schi
 
 ## Securitate si Conformitate
 Aceasta aplicatie implementeaza masuri robuste de securitate conforme cu standardele industriei pentru prevenirea vulnerabilitatilor web comune (OWASP Top 10)."
+
+### Diagrame Model C1, C2, C3
+
+
+![image](https://github.com/user-attachments/assets/13dc228b-dc47-49a9-ada9-42afb8fedb45)
+
+
+![image](https://github.com/user-attachments/assets/53ef2bf3-be8a-4938-80dd-23720d669314)
+
+
+![image](https://github.com/user-attachments/assets/50e9e725-813f-4d51-87a9-3f4690e66e53)
+
+
