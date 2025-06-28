@@ -71,7 +71,23 @@ async function fetchAdminItems() {
         const items = await res.json();
         const ul = document.getElementById('adminItemsList');
         if (!ul) return;
-        ul.innerHTML = items.map((item: any) => `<li>${item.id}: ${item.name} (Categorie: ${item.category_name || 'Necategorizat'}, Cantitate: ${item.quantity})</li>`).join('');
+
+        ul.innerHTML = ''; // Clear existing list
+        items.forEach((item: any) => {
+            const li = document.createElement('li');
+            li.textContent = `${item.id}: ${item.name} (Categorie: ${item.category_name || 'Necategorizat'}, Cantitate: ${item.quantity})`;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Sterge';
+            deleteBtn.onclick = async () => {
+                if (confirm('Ești sigur că vrei să ștergi acest articol?')) {
+                    await fetch(`/api/items/${item.id}`, { method: 'DELETE' });
+                    fetchAdminItems(); // Re-fetch to update the list
+                }
+            };
+            li.appendChild(deleteBtn);
+            ul.appendChild(li);
+        });
     } catch (error) {
         console.error('Eroare la încărcarea articolelor:', error);
     }
