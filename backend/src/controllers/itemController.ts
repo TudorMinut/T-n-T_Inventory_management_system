@@ -351,6 +351,7 @@ export const deleteItem = async (res: ServerResponse, id: number) => {
             res.end(JSON.stringify({ message: "Articolul nu a fost găsit" }));
         }
     } catch (error) {
+        console.error('Error in deleteItem:', error); // Adăugăm logare pentru eroare
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la ștergerea articolului" }));
     }

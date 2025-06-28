@@ -288,6 +288,7 @@ const deleteItem = async (res, id) => {
         }
     }
     catch (error) {
+        console.error('Error in deleteItem:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Eroare la ștergerea articolului" }));
     }
