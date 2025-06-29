@@ -145,6 +145,11 @@
     border-radius: 5px;
 }
 
+.sort-controls .reset-btn {
+    margin-left: 10px;
+    background: #ccc;
+}
+
 .notification-options {
     margin-top: 2.5em;
 }
@@ -184,5 +189,24 @@
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
+    }
+
+    .sort-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .sort-controls strong {
+        flex-basis: 100%;
+    }
+
+    .sort-controls button {
+        flex-basis: calc(50% - 0.25rem);
+        margin: 0;
+    }
+
+    .sort-controls .reset-btn {
+        flex-basis: 100%;
     }
 }

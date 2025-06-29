@@ -51,6 +51,10 @@ export const importCsv = async (req: IncomingMessage, res: ServerResponse) => {
 
             for (const item of parsed.data as any[]) {
                 if (item.name && item.quantity) {
+                    const existingItem = await client.query('SELECT id FROM items WHERE name = $1', [item.name]);
+                    if (existingItem.rows.length > 0) {
+                        continue; // Articolul există deja, sărim peste
+                    }
                     let categoryId = null;
                     if (item.category) {
                         // Verifica daca categoria exista deja

@@ -55,6 +55,10 @@ export const importXml = async (req: IncomingMessage, res: ServerResponse) => {
                 const quantity = item.quantity?._text;
                 const category = item.category?._text;
                 if (name && quantity) {
+                    const existingItem = await client.query('SELECT id FROM items WHERE name = $1', [name]);
+                    if (existingItem.rows.length > 0) {
+                        continue;
+                    }
                     let categoryId = null;
                     if (category) {
                         // Verifica daca categoria exista deja

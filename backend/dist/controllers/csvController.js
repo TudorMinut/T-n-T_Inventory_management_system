@@ -46,6 +46,10 @@ const importCsv = async (req, res) => {
             let nextItemId = maxItemResult.rows[0].max_id + 1;
             for (const item of parsed.data) {
                 if (item.name && item.quantity) {
+                    const existingItem = await client.query('SELECT id FROM items WHERE name = $1', [item.name]);
+                    if (existingItem.rows.length > 0) {
+                        continue;
+                    }
                     let categoryId = null;
                     if (item.category) {
                         let categoryResult = await client.query('SELECT id FROM categories WHERE name = $1', [item.category]);
