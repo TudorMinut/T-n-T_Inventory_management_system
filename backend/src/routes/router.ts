@@ -6,6 +6,7 @@ import { handleUserRoutes } from "./userRoutes";
 import { handleStatisticsRoutes } from "./statisticsRouteHttp";
 import { handleDataRoutes } from "./dataRouteHttp";
 import { handleManualNotificationRoute } from "./manualNotificationRoute";
+import { handleRssRoute } from "./rssRoute";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -103,6 +104,11 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
     }
     if (url?.startsWith("/api/manual-notification")) {
         return handleManualNotificationRoute(req, res);
+    }
+
+    // Serve RSS feed
+    if (url === "/rss.xml" && method === "GET") {
+        return handleRssRoute(req, res);
     }
 
     // Serve static files (CSS, JS, etc.)

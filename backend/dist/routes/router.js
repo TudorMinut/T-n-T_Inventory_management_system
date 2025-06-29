@@ -41,6 +41,7 @@ const userRoutes_1 = require("./userRoutes");
 const statisticsRouteHttp_1 = require("./statisticsRouteHttp");
 const dataRouteHttp_1 = require("./dataRouteHttp");
 const manualNotificationRoute_1 = require("./manualNotificationRoute");
+const rssRoute_1 = require("./rssRoute");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 function serveStaticFile(filePath, contentType, res) {
@@ -120,6 +121,9 @@ const router = (req, res) => {
     }
     if (url?.startsWith("/api/manual-notification")) {
         return (0, manualNotificationRoute_1.handleManualNotificationRoute)(req, res);
+    }
+    if (url === "/rss.xml" && method === "GET") {
+        return (0, rssRoute_1.handleRssRoute)(req, res);
     }
     if (url?.startsWith("/public/")) {
         const relativeUrl = url.substring(1);
