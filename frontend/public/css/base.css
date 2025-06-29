@@ -10,6 +10,8 @@ html {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    /* Previne scroll-ul orizontal */
 }
 
 h1,
@@ -44,4 +46,50 @@ select {
     border-radius: 4px;
     border: 1px solid #ccc;
     font-size: 14px;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+        font-size: 16px;
+        -webkit-text-size-adjust: 100%;
+        /* Previne zoom-ul automat pe iOS */
+    }
+
+    .main-content {
+        width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    .main-header .header-content,
+    .header-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    button,
+    .btn-primary,
+    .btn-danger {
+        width: 100%;
+        padding: 0.8rem;
+        box-sizing: border-box;
+    }
+
+    input,
+    select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.8rem;
+    }
+
+    .login-container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
 }

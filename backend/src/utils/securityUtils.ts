@@ -1,9 +1,7 @@
 // Utilitare de securitate pentru prevenirea atacurilor XSS si validare input-uri
 
 /**
- * Sanitizeaza un string pentru a preveni XSS
- * @param input - 
- * @returns 
+ * Sanitizeaza un string pentru a preveni XSS 
  */
 export const sanitizeHtml = (input: string): string => {
     if (!input) return '';
@@ -18,8 +16,6 @@ export const sanitizeHtml = (input: string): string => {
 
 /**
  * Valideaza un email
- * @param email 
- * @returns 
  */
 export const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,10 +24,7 @@ export const validateEmail = (email: string): boolean => {
 
 /**
  * Valideaza lungimea unui string
- * @param str 
- * @param minLength 
- * @param maxLength
- * @returns 
+ 
  */
 export const validateStringLength = (str: string, minLength: number = 1, maxLength: number = 255): boolean => {
     return !!(str && str.trim().length >= minLength && str.trim().length <= maxLength);
@@ -39,8 +32,7 @@ export const validateStringLength = (str: string, minLength: number = 1, maxLeng
 
 /**
  * Valideaza un numar intreg pozitiv
- * @param num -
- * @returns 
+
  */
 export const validatePositiveInteger = (num: any): boolean => {
     const parsed = parseInt(num);

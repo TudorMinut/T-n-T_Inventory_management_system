@@ -179,3 +179,10 @@
 .display-none {
     display: none !important;
 }
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}

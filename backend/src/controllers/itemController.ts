@@ -1,1 +1,0 @@
-// Toate functionalitatile au fost mutate in fisierele din folderul item.

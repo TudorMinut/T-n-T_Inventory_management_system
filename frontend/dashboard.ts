@@ -221,9 +221,29 @@ $('itemForm')?.addEventListener('submit', async function (e) {
             if (notificationForSelf && notificationForSelf.checked) {
                 data.notification_user_id = localStorage.getItem('userId');
             }
-            if (notifType.value === 'after_time') data.notification_after_minutes = parseInt(($('afterMinutes') as HTMLInputElement)?.value) || 60;
-            if (notifType.value === 'periodic') data.notification_interval_minutes = parseInt(($('intervalMinutes') as HTMLInputElement)?.value) || 60;
-            if (notifType.value === 'fixed_date') data.notification_fixed_date = new Date(($('fixedDateTime') as HTMLInputElement)?.value).toISOString();
+
+            if (notifType.value === 'after_time') {
+                const afterMinutes = ($('afterMinutes') as HTMLInputElement)?.value;
+                if (!afterMinutes) {
+                    alert('Pentru notificarea "După un timp specificat", trebuie să completați numărul de minute.');
+                    return;
+                }
+                data.notification_after_minutes = parseInt(afterMinutes);
+            } else if (notifType.value === 'periodic') {
+                const intervalMinutes = ($('intervalMinutes') as HTMLInputElement)?.value;
+                if (!intervalMinutes) {
+                    alert('Pentru notificarea "Periodică", trebuie să completați intervalul în minute.');
+                    return;
+                }
+                data.notification_interval_minutes = parseInt(intervalMinutes);
+            } else if (notifType.value === 'fixed_date') {
+                const fixedDateTime = ($('fixedDateTime') as HTMLInputElement)?.value;
+                if (!fixedDateTime) {
+                    alert('Pentru notificarea "La o dată fixă", trebuie să selectați data și ora.');
+                    return;
+                }
+                data.notification_fixed_date = new Date(fixedDateTime).toISOString();
+            }
         }
     }
     try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.classList.add('display-none'); fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adaugarea articolului')); }
