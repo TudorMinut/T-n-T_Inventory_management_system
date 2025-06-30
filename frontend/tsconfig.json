@@ -2,12 +2,16 @@
     "compilerOptions": {
         "target": "ES6",
         "module": "ESNext",
-        "outDir": "./public",
+        "outDir": "../backend/dist/frontend/public",
         "rootDir": "./",
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "noEmit": false,
+        "noEmitOnError": false,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "dashboard.ts",
@@ -17,9 +21,11 @@
         "newFile1.ts",
         "newFile2.ts",
         "newFile3.ts",
-        "auth.ts"
+        "auth.ts",
+        "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.js"
     ]
 }

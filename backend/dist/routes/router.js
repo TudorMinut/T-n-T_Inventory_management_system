@@ -80,7 +80,7 @@ const router = (req, res) => {
     const { url, method } = req;
     const frontendPath = process.env.NODE_ENV === 'production'
         ? path.join(__dirname, "..", "frontend")
-        : path.join(__dirname, "..", "..", "..", "frontend");
+        : path.join(__dirname, "..", "..", "dist", "frontend");
     if ((url === "/" || url === "/login.html") && method === "GET") {
         const filePath = path.join(frontendPath, "login.html");
         serveStaticFile(filePath, "text/html", res);
@@ -125,10 +125,26 @@ const router = (req, res) => {
     if (url === "/rss.xml" && method === "GET") {
         return (0, rssRoute_1.handleRssRoute)(req, res);
     }
-    if (url?.startsWith("/public/")) {
-        const relativeUrl = url.substring(1);
-        let filePath = path.join(frontendPath, relativeUrl);
+    if (url?.startsWith("/public/") || url?.endsWith(".js") || url?.endsWith(".css") || url?.endsWith(".ts")) {
+        let filePath;
         let contentType;
+        if (url?.startsWith("/public/")) {
+            const relativeUrl = url.substring(1);
+            filePath = path.join(frontendPath, relativeUrl);
+        }
+        else if (url?.endsWith(".js") && url?.startsWith("/src/dashboard/")) {
+            filePath = path.join(frontendPath, "public", url.substring(1));
+        }
+        else if (url?.endsWith(".js") || url?.endsWith(".css") || url?.endsWith(".ts")) {
+            const relativeUrl = url.substring(1);
+            filePath = path.join(frontendPath, "public", relativeUrl);
+            if (!fs.existsSync(filePath)) {
+                filePath = path.join(frontendPath, relativeUrl);
+            }
+        }
+        else {
+            filePath = path.join(frontendPath, "public", url.substring(1));
+        }
         if (!path.extname(filePath)) {
             const jsFilePath = filePath + ".js";
             if (fs.existsSync(jsFilePath)) {
@@ -136,9 +152,16 @@ const router = (req, res) => {
                 contentType = "application/javascript";
             }
             else {
-                res.writeHead(404, { "Content-Type": "text/plain" });
-                res.end("Not found");
-                return;
+                const publicJsFilePath = path.join(frontendPath, "public", url.substring(1) + ".js");
+                if (fs.existsSync(publicJsFilePath)) {
+                    filePath = publicJsFilePath;
+                    contentType = "application/javascript";
+                }
+                else {
+                    res.writeHead(404, { "Content-Type": "text/plain" });
+                    res.end("Not found");
+                    return;
+                }
             }
         }
         else {

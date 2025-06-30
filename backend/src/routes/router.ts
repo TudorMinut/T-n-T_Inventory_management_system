@@ -50,10 +50,10 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     const { url, method } = req;
 
-    // Fix the frontend path resolution for Render deployment
+    // Fix the frontend path resolution for both development and production
     const frontendPath = process.env.NODE_ENV === 'production'
-        ? path.join(__dirname, "..", "frontend")  // Correct path: Go up from 'routes' to 'dist', then find 'frontend'
-        : path.join(__dirname, "..", "..", "..", "frontend");
+        ? path.join(__dirname, "..", "frontend")  // In production: dist/routes -> dist/frontend
+        : path.join(__dirname, "..", "..", "dist", "frontend");  // In development with ts-node: src/routes -> dist/frontend
 
     // Serve login.html
     if ((url === "/" || url === "/login.html") && method === "GET") {
@@ -112,10 +112,30 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
     }
 
     // Serve static files (CSS, JS, etc.)
-    if (url?.startsWith("/public/")) {
-        const relativeUrl = url.substring(1);
-        let filePath = path.join(frontendPath, relativeUrl);
+    if (url?.startsWith("/public/") || url?.endsWith(".js") || url?.endsWith(".css") || url?.endsWith(".ts")) {
+        let filePath: string;
         let contentType: string;
+
+        if (url?.startsWith("/public/")) {
+            const relativeUrl = url.substring(1);
+            filePath = path.join(frontendPath, relativeUrl);
+        } else if (url?.endsWith(".js") && url?.startsWith("/src/dashboard/")) {
+            // Handle requests for compiled JS files from dashboard
+            filePath = path.join(frontendPath, "public", url.substring(1));
+        } else if (url?.endsWith(".js") || url?.endsWith(".css") || url?.endsWith(".ts")) {
+            // Handle other JS/CSS/TS requests
+            const relativeUrl = url.substring(1);
+            // First try in the public folder
+            filePath = path.join(frontendPath, "public", relativeUrl);
+
+            // If not found, try in the root frontend folder
+            if (!fs.existsSync(filePath)) {
+                filePath = path.join(frontendPath, relativeUrl);
+            }
+        } else {
+            // Handle direct JS/CSS requests
+            filePath = path.join(frontendPath, "public", url.substring(1));
+        }
 
         // Handle extensionless module requests
         if (!path.extname(filePath)) {
@@ -124,10 +144,17 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
                 filePath = jsFilePath;
                 contentType = "application/javascript";
             } else {
-                // Fallback or error handling if file not found
-                res.writeHead(404, { "Content-Type": "text/plain" });
-                res.end("Not found");
-                return;
+                // Try looking in the public folder
+                const publicJsFilePath = path.join(frontendPath, "public", url.substring(1) + ".js");
+                if (fs.existsSync(publicJsFilePath)) {
+                    filePath = publicJsFilePath;
+                    contentType = "application/javascript";
+                } else {
+                    // Fallback or error handling if file not found
+                    res.writeHead(404, { "Content-Type": "text/plain" });
+                    res.end("Not found");
+                    return;
+                }
             }
         } else {
             const ext = path.extname(filePath);

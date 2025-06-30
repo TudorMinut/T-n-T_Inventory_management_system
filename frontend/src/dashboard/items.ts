@@ -1,5 +1,5 @@
-import { api } from './api';
-import { displaySortedItems, cachedItems } from './sorting';
+import { api } from './api.js';
+import { displaySortedItems, cachedItems } from './sorting.js';
 
 export async function fetchItems() {
     try {

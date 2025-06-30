@@ -1,5 +1,5 @@
-import { $, setHTML } from './domUtils';
-import { fetchItems } from './items';
+import { $, setHTML } from './domUtils.js';
+import { fetchItems } from './items.js';
 
 let currentSort = { field: '', direction: 'asc' };
 export let cachedItems: any[] = [];

@@ -1,5 +1,5 @@
-import { api } from './api';
-import { $ } from './domUtils';
+import { api } from './api.js';
+import { $ } from './domUtils.js';
 
 export async function fetchCategories() {
     const categories = await api<any[]>('/api/categories');

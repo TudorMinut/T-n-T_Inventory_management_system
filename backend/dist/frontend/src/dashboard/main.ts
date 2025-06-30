@@ -1,8 +1,8 @@
-import { setupAuth } from './auth';
-import { fetchCategories, setupCategoryForm } from './categories';
-import { fetchItems, setupItemForm } from './items';
-import { fetchNotifications, setupNotificationListeners } from './notifications';
-import { setupSorting } from './sorting';
+import { setupAuth } from './auth.js';
+import { fetchCategories, setupCategoryForm } from './categories.js';
+import { fetchItems, setupItemForm } from './items.js';
+import { fetchNotifications, setupNotificationListeners } from './notifications.js';
+import { setupSorting } from './sorting.js';
 
 // Initializare
 setupAuth();

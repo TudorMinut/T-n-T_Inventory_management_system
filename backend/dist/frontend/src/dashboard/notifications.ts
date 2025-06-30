@@ -1,5 +1,5 @@
-import { api } from './api';
-import { $, setHTML } from './domUtils';
+import { api } from './api.js';
+import { $, setHTML } from './domUtils.js';
 
 export async function fetchNotifications() {
     const notifications = await api<any[]>('/api/notifications');
