@@ -9,8 +9,10 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc"
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm run build",
+    "build:all": "cd backend && npm run build:all",
+    "dev": "cd backend && npm run dev"
   },
   "license": "MIT"
 }

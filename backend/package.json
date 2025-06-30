@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "clean": "node -e \"const fs=require('fs'); const path=require('path'); const distPath=path.join(__dirname,'dist'); if(fs.existsSync(distPath)) fs.rmSync(distPath, {recursive:true, force:true}); fs.mkdirSync(distPath, {recursive:true});\"",
-    "clean:frontend:js": "cd ../frontend && if exist *.js del /q *.js && if exist src\\dashboard\\*.js del /q src\\dashboard\\*.js",
+    "clean:frontend:js": "node -e \"const fs=require('fs'); const path=require('path'); function cleanJS(dir){try{const files=fs.readdirSync(dir); files.forEach(file=>{const fullPath=path.join(dir,file); if(fs.statSync(fullPath).isDirectory()){cleanJS(fullPath)}else if(file.endsWith('.js')){fs.unlinkSync(fullPath)}})}catch(e){}} cleanJS(path.join(__dirname,'..','frontend'));\"",
     "build": "npm run clean && npm run clean:frontend:js && tsc && npm run build:frontend && npx copyfiles -u 2 \"../frontend/**/*\" ./dist/frontend --exclude \"../frontend/public/**\" --exclude \"../frontend/node_modules/**\" --exclude \"../frontend/**/*.js\"",
     "prebuild:frontend": "cd ../frontend && npm install typescript --no-save",
     "build:frontend": "cd ../frontend && npx tsc",
