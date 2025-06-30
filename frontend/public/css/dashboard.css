@@ -167,6 +167,20 @@
     display: inline-block !important;
 }
 
+.admin-btn-hidden {
+    display: none !important;
+}
+
+.margin-top-2-2em {
+    margin-top: 2.2em;
+}
+
+.notification-label-flex {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+}
+
 .sort-btn-active {
     background: #007cba !important;
     color: white !important;
