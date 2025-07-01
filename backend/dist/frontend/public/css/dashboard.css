@@ -185,32 +185,6 @@
     display: none !important;
 }
 
-.rss-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 12px;
-    background: #f0941a;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
-    margin-left: 10px;
-}
-
-.rss-btn:hover {
-    background: #d37e08;
-    text-decoration: none;
-    color: white;
-}
-
-.rss-icon {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
-}
-
 @media (max-width: 768px) {
     .footer-content {
         grid-template-columns: 1fr;
