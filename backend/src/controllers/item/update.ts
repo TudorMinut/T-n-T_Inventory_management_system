@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import pool from '../../config/database';
 import { getRequestBody } from '../../utils/requestUtils';
-import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeInteger } from '../../utils/securityUtils';
+import { sanitizeAndValidateName, validatePositiveInteger } from '../../utils/securityUtils';
 import { createAndSendStockNotification } from '../../services/instantNotificationService';
 
 // Functie pentru actualizarea unui articol
@@ -53,13 +53,13 @@ export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: 
             return;
         }
 
-        if (body.quantity !== undefined && !validateNonNegativeInteger(quantity)) {
+        if (body.quantity !== undefined && !validatePositiveInteger(quantity)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: "Cantitatea trebuie să fie un număr pozitiv" }));
             return;
         }
 
-        if (body.notification_threshold !== undefined && !validateNonNegativeInteger(notification_threshold)) {
+        if (body.notification_threshold !== undefined && !validatePositiveInteger(notification_threshold)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: "Pragul de notificare trebuie să fie un număr pozitiv" }));
             return;

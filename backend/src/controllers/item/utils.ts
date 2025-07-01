@@ -1,6 +1,6 @@
 import pool from '../../config/database';
 import { ServerResponse } from 'http';
-import { sanitizeAndValidateName, validatePositiveInteger, validateNonNegativeInteger } from '../../utils/securityUtils';
+import { sanitizeAndValidateName, validatePositiveInteger } from '../../utils/securityUtils';
 
 // Functie pentru programarea notificarilor personalizate
 export const scheduleCustomNotification = async (item: any) => {
@@ -56,12 +56,12 @@ export function validateItemFields(fields: any, res: ServerResponse): boolean {
         res.end(JSON.stringify({ message: "ID categorie invalid" }));
         return false;
     }
-    if (fields.quantity !== undefined && !validateNonNegativeInteger(fields.quantity)) {
+    if (fields.quantity !== undefined && !validatePositiveInteger(fields.quantity)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Cantitatea trebuie sa fie un numar pozitiv" }));
         return false;
     }
-    if (fields.notification_threshold !== undefined && !validateNonNegativeInteger(fields.notification_threshold)) {
+    if (fields.notification_threshold !== undefined && !validatePositiveInteger(fields.notification_threshold)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Pragul de notificare trebuie sa fie un numar pozitiv" }));
         return false;
