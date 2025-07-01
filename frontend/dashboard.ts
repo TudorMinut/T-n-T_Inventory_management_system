@@ -1,6 +1,12 @@
 // Verificare autentificare si initializare
-if (!localStorage.getItem('userId')) window.location.href = '/';
-if (localStorage.getItem('isAdmin')) document.getElementById('adminBtn')?.classList.add('admin-btn-visible');
+if (!localStorage.getItem('userId')) {
+    window.location.href = '/';
+}
+
+if (localStorage.getItem('isAdmin')) {
+    document.getElementById('adminBtn')?.classList.add('admin-btn-visible');
+}
+
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
@@ -9,7 +15,9 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
 
 // Utilitare DOM
 const $ = (id: string) => document.getElementById(id);
-const setHTML = (el: HTMLElement | null, html: string) => { if (el) el.innerHTML = html; };
+const setHTML = (el: HTMLElement | null, html: string) => {
+    if (el) el.innerHTML = html;
+};
 
 // Notificare personalizata
 $('customNotificationEnabled')?.addEventListener('change', function (this: HTMLInputElement) {
@@ -18,6 +26,7 @@ $('customNotificationEnabled')?.addEventListener('change', function (this: HTMLI
         $('notificationDetails')!.classList.toggle('display-none', !this.checked);
     }
 });
+
 $('notificationType')?.addEventListener('change', function (this: HTMLSelectElement) {
     ['afterTimeOptions', 'periodicOptions', 'fixedDateOptions'].forEach(id => {
         if ($(id)) {
@@ -25,7 +34,13 @@ $('notificationType')?.addEventListener('change', function (this: HTMLSelectElem
             $(id)!.classList.add('display-none');
         }
     });
-    const showMap: any = { 'after_time': 'afterTimeOptions', 'periodic': 'periodicOptions', 'fixed_date': 'fixedDateOptions' };
+
+    const showMap: any = {
+        'after_time': 'afterTimeOptions',
+        'periodic': 'periodicOptions',
+        'fixed_date': 'fixedDateOptions'
+    };
+
     if (showMap[this.value] && $(showMap[this.value])) {
         $(showMap[this.value])!.classList.remove('display-none');
         $(showMap[this.value])!.classList.add('display-block');
@@ -144,16 +159,22 @@ function displaySortedItems() {
 // Categorii
 async function fetchCategories() {
     const categories = await api<any[]>('/api/categories');
+
     setHTML($('categoriesList'), categories.map(cat =>
-        `<li style="margin-bottom: 0.7em;">
+        `<li class="category-item">
             <span>${cat.id}: ${cat.name}</span>
-            <div style="display: flex; flex-direction: row; gap: 0.5em; margin-top: 0.2em;">
-                ${cat.name.toLowerCase() !== 'necategorizate' ? `<button style="width: 110px;" onclick="deleteCategory(${cat.id})">Șterge</button>` : ''}
-                <button style="width: 110px;" onclick="editCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}')">Editează</button>
+            <div class="category-actions">
+                ${cat.name.toLowerCase() !== 'necategorizate' ?
+            `<button class="category-btn" onclick="deleteCategory(${cat.id})">Șterge</button>` :
+            ''}
+                <button class="category-btn" onclick="editCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}')">Editează</button>
             </div>
         </li>`
     ).join(''));
-    setHTML($('itemCategory'), categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join(''));
+
+    setHTML($('itemCategory'), categories.map(cat =>
+        `<option value="${cat.id}">${cat.name}</option>`
+    ).join(''));
 }
 
 // Articole
@@ -182,21 +203,52 @@ async function fetchNotifications() {
     await fetch(`/api/items/${id}`, { method: 'DELETE' });
     fetchItems();
 };
+
 (window as any).deleteCategory = async (id: number) => {
     if (confirm('Esti sigur ca vrei sa stergi aceasta categorie? Articolele din aceasta categorie vor fi mutate in categoria "Necategorizate".')) {
-        try { await fetch(`/api/categories/${id}`, { method: 'DELETE' }); fetchCategories(); fetchItems(); } catch { alert('Eroare la stergerea categoriei'); }
+        try {
+            await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+            fetchCategories();
+            fetchItems();
+        } catch {
+            alert('Eroare la stergerea categoriei');
+        }
     }
 };
+
 (window as any).editCategory = async (id: number, currentName: string) => {
     const newName = prompt('Introdu noul nume pentru categorie:', currentName);
     if (newName && newName.trim() && newName !== currentName) {
-        try { await fetch(`/api/categories/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName }) }); fetchCategories(); } catch { alert('Eroare la actualizarea categoriei'); }
+        try {
+            await fetch(`/api/categories/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName })
+            });
+            fetchCategories();
+        } catch {
+            alert('Eroare la actualizarea categoriei');
+        }
     }
 };
+
 (window as any).updateItemQuantity = async (id: number, newQuantity: string) => {
-    if (!/^[0-9]+$/.test(newQuantity)) return alert('Cantitatea trebuie să fie un număr pozitiv!');
-    try { await fetch(`/api/items/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: parseInt(newQuantity) }) }); fetchItems(); } catch { alert('Eroare la actualizarea cantității'); }
+    if (!/^[0-9]+$/.test(newQuantity)) {
+        return alert('Cantitatea trebuie să fie un număr pozitiv!');
+    }
+
+    try {
+        await fetch(`/api/items/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quantity: parseInt(newQuantity) })
+        });
+        fetchItems();
+    } catch {
+        alert('Eroare la actualizarea cantității');
+    }
 };
+
 // Functii de sortare expuse global
 (window as any).sortItems = sortItems;
 (window as any).resetSort = resetSort;
@@ -205,18 +257,45 @@ async function fetchNotifications() {
 $('categoryForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
     const name = ($('categoryName') as HTMLInputElement)?.value;
-    if (name) { await fetch('/api/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) }); (this as HTMLFormElement).reset(); fetchCategories(); }
+
+    if (name) {
+        await fetch('/api/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        (this as HTMLFormElement).reset();
+        fetchCategories();
+    }
 });
+
 $('itemForm')?.addEventListener('submit', async function (e) {
     e.preventDefault();
-    const itemName = $('itemName') as HTMLInputElement, itemCategory = $('itemCategory') as HTMLSelectElement, itemQuantity = $('itemQuantity') as HTMLInputElement, itemThreshold = $('itemThreshold') as HTMLInputElement, customNotification = $('customNotificationEnabled') as HTMLInputElement;
+
+    const itemName = $('itemName') as HTMLInputElement;
+    const itemCategory = $('itemCategory') as HTMLSelectElement;
+    const itemQuantity = $('itemQuantity') as HTMLInputElement;
+    const itemThreshold = $('itemThreshold') as HTMLInputElement;
+    const customNotification = $('customNotificationEnabled') as HTMLInputElement;
+
     if (!itemName || !itemCategory || !itemQuantity || !itemThreshold) return;
-    const data: any = { name: itemName.value, category_id: itemCategory.value, quantity: itemQuantity.value, notification_threshold: itemThreshold.value };
+
+    const data: any = {
+        name: itemName.value,
+        category_id: itemCategory.value,
+        quantity: itemQuantity.value,
+        notification_threshold: itemThreshold.value
+    };
+
     if (customNotification && customNotification.checked) {
-        const notifType = $('notificationType') as HTMLSelectElement, customMessage = $('customMessage') as HTMLInputElement, notificationForSelf = $('notificationForSelf') as HTMLInputElement;
+        const notifType = $('notificationType') as HTMLSelectElement;
+        const customMessage = $('customMessage') as HTMLInputElement;
+        const notificationForSelf = $('notificationForSelf') as HTMLInputElement;
+
         if (notifType) {
             data.custom_notification_enabled = true;
             data.notification_type = notifType.value;
+
             if (customMessage) data.notification_message = customMessage.value;
             if (notificationForSelf && notificationForSelf.checked) {
                 data.notification_user_id = localStorage.getItem('userId');
@@ -246,7 +325,23 @@ $('itemForm')?.addEventListener('submit', async function (e) {
             }
         }
     }
-    try { await fetch('/api/items', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); (this as HTMLFormElement).reset(); if ($('notificationDetails')) $('notificationDetails')!.classList.add('display-none'); fetchItems(); } catch (err: any) { alert('Eroare: ' + (err?.message || 'la adaugarea articolului')); }
+
+    try {
+        await fetch('/api/items', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        (this as HTMLFormElement).reset();
+
+        if ($('notificationDetails')) {
+            $('notificationDetails')!.classList.add('display-none');
+        }
+
+        fetchItems();
+    } catch (err: any) {
+        alert('Eroare: ' + (err?.message || 'la adaugarea articolului'));
+    }
 });
 
 // Initializare

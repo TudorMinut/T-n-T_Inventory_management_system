@@ -225,6 +225,22 @@
     fill: currentColor;
 }
 
+/* Stiluri pentru categorii */
+.category-item {
+    margin-bottom: 0.7em;
+}
+
+.category-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin-top: 0.2em;
+}
+
+.category-btn {
+    width: 110px;
+}
+
 @media (max-width: 768px) {
     .footer-content {
         grid-template-columns: 1fr;
