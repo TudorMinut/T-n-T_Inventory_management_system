@@ -39,13 +39,6 @@ export const validatePositiveInteger = (num: any): boolean => {
     return !isNaN(parsed) && parsed > 0 && parsed <= 2147483647; // Max PostgreSQL integer
 };
 
-/**
- * Valideaza un numar intreg non-negativ
- */
-export const validateNonNegativeInteger = (num: any): boolean => {
-    const parsed = parseInt(num);
-    return !isNaN(parsed) && parsed >= 0 && parsed <= 2147483647;
-};
 
 /**
  * Sanitizeaza si valideaza input-ul pentru numele categoriilor/articolelor
