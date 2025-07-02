@@ -17,7 +17,7 @@ export async function handleRssRoute(req: IncomingMessage, res: ServerResponse) 
         `);
         const items = result.rows;
         const siteTitle = "T-n-T - Gestionare Stocuri";
-        const siteUrl = "http://localhost:3000";
+        const siteUrl = "https://t-n-t.onrender.com";
         const siteDescription = "Flux RSS cu ultimele articole adaugate in gestiune.";
         const lastBuildDate = new Date().toUTCString();
         let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;

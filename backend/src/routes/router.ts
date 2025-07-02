@@ -26,7 +26,7 @@ function serveStaticFile(filePath: string, contentType: string, res: ServerRespo
 export const router = (req: IncomingMessage, res: ServerResponse) => {
     // CORS and security headers
     const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://yourdomain.com']
+        ? ['https://t-n-t.onrender.com']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
     const origin = req.headers.origin;
