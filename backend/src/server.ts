@@ -86,7 +86,7 @@ initializeDatabase();
 setInterval(() => {
     console.log("Verificare stocuri pentru notificari...");
     checkStockAndNotify();
-}, 30000); // 30000 ms = 30 secunde
+}, 10000);
 
 const server = http.createServer((req, res) => {
     router(req, res);

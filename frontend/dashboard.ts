@@ -348,4 +348,4 @@ $('itemForm')?.addEventListener('submit', async function (e) {
 fetchCategories();
 fetchItems();
 fetchNotifications();
-setInterval(fetchNotifications, 15000);
+setInterval(fetchNotifications, 5000);
