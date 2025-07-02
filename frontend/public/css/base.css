@@ -54,8 +54,6 @@ select {
         padding: 1rem;
         font-size: 16px;
         text-size-adjust: 100%;
-        -webkit-text-size-adjust: 100%;
-        /* Previne zoom-ul automat pe iOS */
     }
 
     .main-content {
