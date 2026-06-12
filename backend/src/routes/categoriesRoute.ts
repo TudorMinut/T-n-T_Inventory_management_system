@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { getAllCategories, createCategory, updateCategory, deleteCategory } from "../controllers/categoryController";
+import { sendError } from "../utils/responseUtils";
 
 export const handleCategoriesRoutes = async (req: IncomingMessage, res: ServerResponse) => {
     const { url, method } = req;
@@ -7,13 +8,18 @@ export const handleCategoriesRoutes = async (req: IncomingMessage, res: ServerRe
 
     if (url === "/api/categories" && method === "GET") {
         return getAllCategories(res);
-    } else if (url === "/api/categories" && method === "POST") {
+    }
+    if (url === "/api/categories" && method === "POST") {
         return createCategory(req, res);
-    } else if (regexResult && method === "PUT") {
-        const id = parseInt(regexResult[1]);
+    }
+    if (regexResult && method === "PUT") {
+        const id = parseInt(regexResult[1], 10);
         return updateCategory(req, res, id);
-    } else if (regexResult && method === "DELETE") {
-        const id = parseInt(regexResult[1]);
+    }
+    if (regexResult && method === "DELETE") {
+        const id = parseInt(regexResult[1], 10);
         return deleteCategory(res, id);
     }
+
+    sendError(res, 404, "Ruta pentru categorii nu a fost gasita");
 };

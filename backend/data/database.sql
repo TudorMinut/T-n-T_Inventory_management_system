@@ -10,7 +10,8 @@ CREATE TABLE users (
 -- Create categories table
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT
 );
 
 -- Create items table

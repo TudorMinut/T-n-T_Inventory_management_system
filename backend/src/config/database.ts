@@ -1,13 +1,12 @@
-import { Pool } from 'pg';
-
-// Aici va fi configurată conexiunea la baza de date PostgreSQL.
+import { Pool } from "pg";
+import { env } from "./env";
 
 const pool = new Pool({
-    user: 'postgres', // înlocuiți cu utilizatorul dumneavoastră
-    host: 'localhost',
-    database: 'tnt_db', // înlocuiți cu numele bazei de date
-    password: 'admin', // înlocuiți cu parola dumneavoastră
-    port: 5432,
+    user: env.database.user,
+    host: env.database.host,
+    database: env.database.name,
+    password: env.database.password,
+    port: env.database.port,
 });
 
 export default pool;

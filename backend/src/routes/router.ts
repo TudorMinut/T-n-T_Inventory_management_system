@@ -4,16 +4,47 @@ import { handleUserRoutes } from "./userRoutes";
 import { handleCategoriesRoutes } from "./categoriesRoute";
 import { handleNotificationRoutes } from "./notificationRoutes";
 import { handleStatisticsRoutes } from "./statisticsRoute";
+import { handleDataRoutes } from "./dataRoutesHttp";
 import * as fs from "fs";
 import * as path from "path";
+import { sendError } from "../utils/responseUtils";
+
+const frontendRoot = path.join(__dirname, "..", "..", "..", "frontend");
+
+const getContentType = (filePath: string) => {
+    const ext = path.extname(filePath).toLowerCase();
+    switch (ext) {
+        case ".html":
+            return "text/html; charset=utf-8";
+        case ".css":
+            return "text/css; charset=utf-8";
+        case ".js":
+            return "application/javascript; charset=utf-8";
+        case ".json":
+            return "application/json; charset=utf-8";
+        default:
+            return "application/octet-stream";
+    }
+};
+
+const serveFile = (res: ServerResponse, filePath: string) => {
+    fs.readFile(filePath, (err, data) => {
+        if (err) {
+            console.error("Eroare citire fisier:", err);
+            return sendError(res, 500, "Eroare interna a serverului");
+        }
+
+        res.writeHead(200, { "Content-Type": getContentType(filePath) });
+        res.end(data);
+    });
+};
 
 export const router = (req: IncomingMessage, res: ServerResponse) => {
-    // Permite cereri de la orice origine (CORS)
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    if (req.method === 'OPTIONS') {
+    if (req.method === "OPTIONS") {
         res.writeHead(204);
         res.end();
         return;
@@ -21,35 +52,13 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
 
     const { url, method } = req;
 
-    // Servește login.html la ruta rădăcină și la /login.html
     if ((url === "/" || url === "/login.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "login.html");
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                console.error("Eroare citire fișier:", err);
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Eroare internă a serverului" }));
-                return;
-            }
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(data);
-        });
+        serveFile(res, path.join(frontendRoot, "login.html"));
         return;
     }
 
-    // Servește dashboard.html
     if ((url === "/dashboard" || url === "/dashboard.html") && method === "GET") {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", "dashboard.html");
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                console.error("Eroare citire fișier:", err);
-                res.writeHead(500, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ message: "Eroare internă a serverului" }));
-                return;
-            }
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(data);
-        });
+        serveFile(res, path.join(frontendRoot, "dashboard.html"));
         return;
     }
 
@@ -68,26 +77,19 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
     if (url?.startsWith("/api/stats")) {
         return handleStatisticsRoutes(req, res);
     }
+    if (url?.startsWith("/api/data")) {
+        return handleDataRoutes(req, res);
+    }
 
-    // Servește fișiere statice (ex: CSS)
     if (url?.startsWith("/public/")) {
-        const filePath = path.join(__dirname, "..", "..", "..", "frontend", url);
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                console.error("Eroare citire fișier static:", err);
-                res.writeHead(404, { "Content-Type": "text/plain" });
-                res.end("Not found");
-                return;
-            }
-            // Setează tipul de conținut pentru CSS
-            const ext = path.extname(filePath);
-            const contentType = ext === ".css" ? "text/css" : "application/octet-stream";
-            res.writeHead(200, { "Content-Type": contentType });
-            res.end(data);
-        });
+        const requestedPath = path.normalize(url.replace(/^\/+/, ""));
+        const filePath = path.join(frontendRoot, requestedPath);
+        if (!filePath.startsWith(frontendRoot)) {
+            return sendError(res, 403, "Acces interzis");
+        }
+        serveFile(res, filePath);
         return;
     }
 
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Ruta inexistentă" }));
+    sendError(res, 404, "Ruta inexistenta");
 };

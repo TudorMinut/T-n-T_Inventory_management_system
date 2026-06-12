@@ -35,6 +35,12 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http = __importStar(require("http"));
 const router_1 = require("./routes/router");
+const notificationService_1 = require("./services/notificationService");
+// Rulează serviciul de notificare la fiecare 30 de secunde
+setInterval(() => {
+    console.log("Verificare stocuri pentru notificări...");
+    (0, notificationService_1.checkStockAndNotify)();
+}, 30000); // 30000 ms = 30 secunde
 const server = http.createServer((req, res) => {
     (0, router_1.router)(req, res);
 });

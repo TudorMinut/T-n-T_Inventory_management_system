@@ -1,18 +1,31 @@
 import * as http from "http";
 import { router } from "./routes/router";
 import { checkStockAndNotify } from "./services/notificationService";
+import { env } from "./config/env";
 
-// Rulează serviciul de notificare la fiecare 30 de secunde
-setInterval(() => {
-    console.log("Verificare stocuri pentru notificări...");
-    checkStockAndNotify();
-}, 30000); // 30000 ms = 30 secunde
+let stockCheckInterval: NodeJS.Timeout | undefined;
 
 const server = http.createServer((req, res) => {
     router(req, res);
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Server pornit pe http://localhost:${PORT}`);
+server.listen(env.port, () => {
+    console.log(`Server pornit pe http://localhost:${env.port}`);
+    stockCheckInterval = setInterval(() => {
+        console.log("Verificare stocuri pentru notificari...");
+        void checkStockAndNotify();
+    }, env.stockCheckIntervalMs);
 });
+
+const shutdown = () => {
+    if (stockCheckInterval) {
+        clearInterval(stockCheckInterval);
+    }
+
+    server.close(() => {
+        process.exit(0);
+    });
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
