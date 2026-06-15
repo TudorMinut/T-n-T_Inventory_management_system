@@ -1,70 +1,70 @@
 # T-n-T
 
-Aplicație Web pentru gestionarea stocurilor de articole esențiale, consumabile și piese de schimb dintr-o gospodărie, organizație sau întreprindere.
+Web application for managing stocks of essential items, consumables, and spare parts used in a household, organization, or company.
 
-Proiectul urmărește cerința de a centraliza produse precum becuri, lemne pentru foc, condimente, toner, cosmetice, pahare de unică folosință, pioneze, medicamente de uz general sau piese de schimb pentru diverse echipamente, cu accent pe:
+The project follows the original implementation specification: centralizing items such as light bulbs, firewood, spices, toner, cosmetics, disposable cups, thumbtacks, common-use medicine, and spare parts for various devices, with emphasis on:
 
-- organizare pe categorii;
-- urmărirea cantităților disponibile;
-- notificări la stoc redus;
-- notificări vizibile în interfață și, opțional, prin email;
-- import și export de date în formatele CSV, JSON și XML;
-- generare de statistici în HTML și PDF.
+- category-based organization;
+- quantity tracking;
+- low-stock notifications;
+- notifications shown inside the application and, optionally, by email;
+- data import and export in CSV, JSON, and XML formats;
+- statistics generation as HTML and PDF documents.
 
-## Arhitectură
+## Architecture
 
-![Diagrama arhitecturii](./Diagrama_C3_Web.png)
+![Architecture Diagram](./Diagrama_C3_Web.png)
 
-## Tehnologii folosite
+## Technology Stack
 
 ### Frontend
 
 - HTML
 - CSS
-- JavaScript livrat static din server
+- JavaScript served statically by the backend
 
 ### Backend
 
 - Node.js
 - TypeScript
-- server HTTP construit peste modulul nativ `http`
+- HTTP server built on the native `http` module
 - PostgreSQL
 
-### Alte biblioteci
+### Supporting Libraries
 
-- `pg` pentru acces la baza de date
-- `bcrypt` pentru parole
-- `nodemailer` pentru email
-- `papaparse` pentru CSV
-- `xml-js` pentru XML
-- `pdfkit` pentru export PDF
+- `pg` for database access
+- `bcrypt` for password hashing
+- `nodemailer` for email delivery
+- `papaparse` for CSV handling
+- `xml-js` for XML handling
+- `pdfkit` for PDF export
 
-### Infrastructură
+### Infrastructure
 
 - Docker
 - Docker Compose
 
-## Ce implementează proiectul în prezent
+## What the Project Currently Implements
 
-- autentificare de bază prin înregistrare și login;
-- gestionare categorii;
-- gestionare articole cu prag de notificare;
-- generare automată de notificări atunci când `quantity <= notification_threshold`;
-- trimitere email pentru notificările de stoc redus dacă SMTP este configurat;
-- export date în CSV, JSON și XML;
-- import date din CSV, JSON și XML;
-- statistici simple despre articole în format HTML și PDF;
-- interfață Web statică pentru login și dashboard.
+- basic user registration and login;
+- category management;
+- item management with notification thresholds;
+- automatic notification generation when `quantity <= notification_threshold`;
+- email delivery for low-stock notifications if SMTP is configured;
+- CSV, JSON, and XML export;
+- CSV, JSON, and XML import;
+- simple item statistics in HTML and PDF;
+- static Web interface for login and dashboard pages.
 
-## Observații importante
+## Important Notes
 
-- Backend-ul nu folosește Express, deși README-ul vechi spunea asta.
-- Serverul pornește un job periodic care verifică stocurile la fiecare `STOCK_CHECK_INTERVAL_MS`.
-- Emailurile sunt trimise numai dacă variabilele SMTP sunt configurate. Altfel, notificările rămân doar în aplicație.
-- Statistica exportată este una tabelară, bazată pe articolele și categoriile existente în baza de date.
-- Importul se face din body-ul request-ului, nu prin upload multipart.
+- The backend does not use Express, even though the old README claimed it did.
+- The server starts a periodic job that checks stock levels every `STOCK_CHECK_INTERVAL_MS`.
+- Emails are sent only if SMTP environment variables are configured. Otherwise, notifications remain in-app only.
+- Exported statistics are table-based and use the items and categories currently stored in the database.
+- Import works from the raw request body, not from multipart file upload.
 
-## Structura proiectului
+## Project Structure
 
 ```text
 T-n-T/
@@ -97,9 +97,9 @@ T-n-T/
 `-- README.md
 ```
 
-## Model de date
+## Data Model
 
-Schema SQL inițială definește următoarele tabele:
+The initial SQL schema defines the following tables:
 
 - `users`
   - `id`
@@ -125,9 +125,9 @@ Schema SQL inițială definește următoarele tabele:
   - `is_read`
   - `created_at`
 
-## Configurare
+## Configuration
 
-Backend-ul citește următoarele variabile de mediu:
+The backend reads the following environment variables:
 
 ```env
 PORT=3000
@@ -144,28 +144,28 @@ SMTP_FROM=no-reply@example.com
 STOCK_CHECK_INTERVAL_MS=30000
 ```
 
-## Rulare cu Docker
+## Running with Docker
 
-Comanda principală:
+Main command:
 
 ```bash
 docker compose up --build
 ```
 
-Serviciile definite:
+Defined services:
 
-- `db` - PostgreSQL 16, inițializat cu `backend/data/database.sql`
-- `backend` - serverul Node.js pe portul `3000`
+- `db` - PostgreSQL 16, initialized from `backend/data/database.sql`
+- `backend` - Node.js server exposed on port `3000`
 
-După pornire:
+After startup:
 
-- aplicația este disponibilă la `http://localhost:3000`
-- pagina de login este servită la `/` sau `/login.html`
-- dashboard-ul este servit la `/dashboard` sau `/dashboard.html`
+- the application is available at `http://localhost:3000`
+- the login page is served at `/` or `/login.html`
+- the dashboard is served at `/dashboard` or `/dashboard.html`
 
-## Rulare locală
+## Running Locally
 
-1. Instalează dependențele:
+1. Install dependencies:
 
 ```bash
 npm install
@@ -173,54 +173,54 @@ cd backend
 npm install
 ```
 
-2. Pornește o instanță PostgreSQL și creează baza de date `tnt_db`.
+2. Start PostgreSQL and create a database named `tnt_db`.
 
-3. Rulează scriptul SQL din `backend/data/database.sql`.
+3. Run the SQL script from `backend/data/database.sql`.
 
-4. Configurează variabilele de mediu pentru backend.
+4. Configure the backend environment variables.
 
-5. Pornește serverul:
+5. Start the server:
 
 ```bash
 cd backend
 npm run dev
 ```
 
-## Funcționarea notificărilor
+## How Notifications Work
 
-La pornirea serverului este creat un interval periodic. La fiecare execuție:
+When the server starts, it creates a periodic interval. On each run:
 
-1. se caută articolele cu `quantity <= notification_threshold`;
-2. se evită duplicarea aceleiași notificări pentru același articol în interval de 24 de ore;
-3. se inserează notificarea în tabela `notifications`;
-4. se trimite email către toți utilizatorii care au adresă de email, dacă SMTP este configurat.
+1. it finds items where `quantity <= notification_threshold`;
+2. it avoids creating the same notification for the same item within 24 hours;
+3. it inserts the notification into the `notifications` table;
+4. it sends email to all users with an email address, if SMTP is configured.
 
-## API endpoints
+## API Endpoints
 
-Mai jos este lista endpoint-urilor implementate efectiv în cod.
+Below is the list of endpoints actually implemented in the codebase.
 
-### Autentificare utilizatori
+### User Authentication
 
 #### `POST /api/users/register`
 Alias: `POST /users/register`
 
-Body:
+Request body:
 
 ```json
 {
   "username": "demo",
   "email": "demo@example.com",
-  "password": "parola123"
+  "password": "password123"
 }
 ```
 
-Reguli:
+Validation rules:
 
-- `username` obligatoriu
-- `email` obligatoriu
-- `password` obligatorie, minim 8 caractere
+- `username` is required
+- `email` is required
+- `password` is required and must be at least 8 characters
 
-Răspuns `201`:
+Response `201`:
 
 ```json
 {
@@ -233,16 +233,16 @@ Răspuns `201`:
 #### `POST /api/users/login`
 Alias: `POST /users/login`
 
-Body:
+Request body:
 
 ```json
 {
   "email": "demo@example.com",
-  "password": "parola123"
+  "password": "password123"
 }
 ```
 
-Răspuns `200`:
+Response `200`:
 
 ```json
 {
@@ -251,19 +251,19 @@ Răspuns `200`:
 }
 ```
 
-### Categorii
+### Categories
 
 #### `GET /api/categories`
 
-Returnează toate categoriile ordonate alfabetic.
+Returns all categories ordered alphabetically.
 
-Răspuns `200`:
+Response `200`:
 
 ```json
 [
   {
     "id": 1,
-    "name": "Electronice",
+    "name": "Electronics",
     "description": null
   }
 ]
@@ -271,43 +271,43 @@ Răspuns `200`:
 
 #### `POST /api/categories`
 
-Body:
+Request body:
 
 ```json
 {
-  "name": "Consumabile",
-  "description": "Articole de uz curent"
+  "name": "Consumables",
+  "description": "Frequently used supplies"
 }
 ```
 
 #### `PUT /api/categories/:id`
 
-Body:
+Request body:
 
 ```json
 {
-  "name": "Consumabile birou",
-  "description": "Toner, hartie, pixuri"
+  "name": "Office Consumables",
+  "description": "Toner, paper, pens"
 }
 ```
 
 #### `DELETE /api/categories/:id`
 
-Răspuns `204` la ștergere reușită.
+Returns `204` on successful deletion.
 
-### Articole
+### Items
 
 #### `GET /api/items`
 
-Returnează toate articolele ordonate descrescător după creare.
+Returns all items ordered by creation date descending.
 
-Răspuns `200`:
+Response `200`:
 
 ```json
 [
   {
     "id": 1,
-    "name": "Toner imprimanta",
+    "name": "Printer toner",
     "category_id": 2,
     "quantity": 3,
     "notification_threshold": 5,
@@ -318,31 +318,31 @@ Răspuns `200`:
 
 #### `POST /api/items`
 
-Body:
+Request body:
 
 ```json
 {
-  "name": "Toner imprimanta",
+  "name": "Printer toner",
   "category_id": 2,
   "quantity": 3,
   "notification_threshold": 5
 }
 ```
 
-Reguli:
+Validation rules:
 
-- `name` obligatoriu
-- `quantity` trebuie să fie număr `>= 0`
-- `notification_threshold` trebuie să fie număr `>= 0`
-- `category_id` poate lipsi sau poate fi `null`
+- `name` is required
+- `quantity` must be a number `>= 0`
+- `notification_threshold` must be a number `>= 0`
+- `category_id` may be omitted or `null`
 
 #### `PUT /api/items/:id`
 
-Body:
+Request body:
 
 ```json
 {
-  "name": "Toner imprimanta color",
+  "name": "Color printer toner",
   "category_id": 2,
   "quantity": 2,
   "notification_threshold": 4
@@ -351,15 +351,15 @@ Body:
 
 #### `DELETE /api/items/:id`
 
-Răspuns `204` la ștergere reușită.
+Returns `204` on successful deletion.
 
-### Notificări
+### Notifications
 
 #### `GET /api/notifications`
 
-Returnează notificările împreună cu numele articolului.
+Returns notifications together with the related item name.
 
-Răspuns `200`:
+Response `200`:
 
 ```json
 [
@@ -375,27 +375,27 @@ Răspuns `200`:
 
 #### `PUT /api/notifications/:id/read`
 
-Marchează notificarea ca citită.
+Marks a notification as read.
 
 #### `DELETE /api/notifications/:id`
 
-Șterge notificarea.
+Deletes a notification.
 
-### Export date
+### Data Export
 
 #### `GET /api/data/export/csv`
 
-Descarcă fișierul `items.csv`.
+Downloads `items.csv`.
 
 #### `GET /api/data/export/json`
 
-Descarcă fișierul `items.json`.
+Downloads `items.json`.
 
 #### `GET /api/data/export/xml`
 
-Descarcă fișierul `items.xml`.
+Downloads `items.xml`.
 
-Datele exportate includ:
+Exported data includes:
 
 - `name`
 - `category`
@@ -403,17 +403,17 @@ Datele exportate includ:
 - `notification_threshold`
 - `created_at`
 
-### Import date
+### Data Import
 
 #### `POST /api/data/import/json`
 
-Body exemplu:
+Example request body:
 
 ```json
 [
   {
-    "name": "Bec LED",
-    "category": "Electronice",
+    "name": "LED bulb",
+    "category": "Electronics",
     "quantity": 10,
     "notification_threshold": 3
   }
@@ -422,74 +422,74 @@ Body exemplu:
 
 #### `POST /api/data/import/csv`
 
-Body exemplu:
+Example request body:
 
 ```csv
 name,category,quantity,notification_threshold
-Bec LED,Electronice,10,3
-Pahare,Consumabile,50,10
+LED bulb,Electronics,10,3
+Disposable cups,Consumables,50,10
 ```
 
 #### `POST /api/data/import/xml`
 
-Body exemplu:
+Example request body:
 
 ```xml
 <items>
   <item>
-    <name>Bec LED</name>
-    <category>Electronice</category>
+    <name>LED bulb</name>
+    <category>Electronics</category>
     <quantity>10</quantity>
     <notification_threshold>3</notification_threshold>
   </item>
 </items>
 ```
 
-Comportament la import:
+Import behavior:
 
-- dacă categoria nu există, este creată automat;
-- dacă `notification_threshold` lipsește, se folosește valoarea implicită `5`.
+- if the category does not exist, it is created automatically;
+- if `notification_threshold` is missing, the default value `5` is used.
 
-### Statistici
+### Statistics
 
 #### `GET /api/stats/html`
 
-Generează un document HTML cu tabel de articole.
+Generates an HTML document containing an item table.
 
 #### `GET /api/stats/pdf`
 
-Generează și descarcă un PDF numit `statistici.pdf`.
+Generates and downloads a PDF file named `statistici.pdf`.
 
 #### `GET /api/statistics/html`
 
-Rută suplimentară expusă din modulul de date, cu același scop: raport HTML.
+Additional route exposed from the data module with the same purpose: HTML report.
 
 #### `GET /api/statistics/pdf`
 
-Rută suplimentară expusă din modulul de date, cu același scop: raport PDF.
+Additional route exposed from the data module with the same purpose: PDF report.
 
-## Resurse frontend servite de backend
+## Frontend Resources Served by the Backend
 
 - `GET /` -> `frontend/login.html`
 - `GET /login.html` -> `frontend/login.html`
 - `GET /dashboard` -> `frontend/dashboard.html`
 - `GET /dashboard.html` -> `frontend/dashboard.html`
-- `GET /public/*` -> fișiere statice din `frontend/public`
+- `GET /public/*` -> static files from `frontend/public`
 
-## Limitări curente
+## Current Limitations
 
-- Nu există token-uri, sesiuni sau JWT; login-ul doar validează credențialele și întoarce `userId`.
-- Nu există roluri sau permisiuni pentru grupuri de utilizatori.
-- Nu există endpoint dedicat pentru programarea notificărilor la date fixe; în prezent este implementată verificarea periodică a stocului redus.
-- Importul nu folosește `multipart/form-data`.
-- Documentele statistice sunt minimaliste și nu includ grafice.
-- Nu există suită de teste automată în proiect.
+- There are no tokens, sessions, or JWTs; login only validates credentials and returns `userId`.
+- There are no roles or permissions for user groups.
+- There is no dedicated endpoint for fixed-date maintenance scheduling; the current implementation covers periodic low-stock checks.
+- Import does not use `multipart/form-data`.
+- The generated statistics documents are minimal and do not include charts.
+- The project does not include an automated test suite.
 
-## Posibile extinderi
+## Possible Extensions
 
-- autentificare cu sesiuni sau JWT;
-- roluri pentru utilizatori și notificări pe grupuri;
-- reguli de mentenanță pentru echipamente, nu doar praguri de stoc;
-- dashboard cu grafice reale;
-- validare mai strictă pentru importuri;
-- filtre și căutare pentru articole și notificări.
+- session-based or JWT-based authentication;
+- user roles and group-targeted notifications;
+- maintenance rules for equipment, not only stock thresholds;
+- dashboard with real charts;
+- stricter import validation;
+- filtering and search for items and notifications.
