@@ -1,4 +1,4 @@
-"# T-n-T - Inventory Management System
+# T-n-T - Inventory Management System
 
 A full-stack web application for managing inventory with user authentication, item categorization, statistics tracking, and notifications.
 
@@ -12,7 +12,6 @@ A full-stack web application for managing inventory with user authentication, it
 
 - **HTML/CSS** - User interface markup and styling
 - **TypeScript** - Type-safe frontend logic
-- **Pages**: Dashboard, Login/Register, Statistics, Admin Panel
 
 ### Backend
 
@@ -23,8 +22,7 @@ A full-stack web application for managing inventory with user authentication, it
 
 ### Infrastructure
 
-- **Docker** - Containerization
-- **Docker Compose** - Multi-container orchestration
+- **Docker** - Containerization for Frontend and Backend
 
 ## Project Structure
 
