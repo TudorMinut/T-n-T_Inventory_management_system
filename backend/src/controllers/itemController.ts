@@ -35,15 +35,19 @@ export const getAllItems = async (res: ServerResponse) => {
 export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
     try {
         const body = await getRequestBody<ItemPayload>(req);
+        const normalizedName = body.name?.trim();
+        if (!normalizedName) {
+            return sendError(res, 400, "Numele articolului este obligatoriu.");
+        }
         const validationError = validateItemPayload(body);
         if (validationError) {
             return sendError(res, 400, validationError);
         }
 
-        const { name, category_id, quantity, notification_threshold } = body;
+        const { category_id, quantity, notification_threshold } = body;
         const result = await pool.query(
             "INSERT INTO items (name, category_id, quantity, notification_threshold) VALUES ($1, $2, $3, $4) RETURNING *",
-            [name.trim(), category_id ?? null, quantity, notification_threshold]
+            [normalizedName, category_id ?? null, quantity, notification_threshold]
         );
         sendJson(res, 201, result.rows[0]);
     } catch (error) {
@@ -54,15 +58,19 @@ export const createItem = async (req: IncomingMessage, res: ServerResponse) => {
 export const updateItem = async (req: IncomingMessage, res: ServerResponse, id: number) => {
     try {
         const body = await getRequestBody<ItemPayload>(req);
+        const normalizedName = body.name?.trim();
+        if (!normalizedName) {
+            return sendError(res, 400, "Numele articolului este obligatoriu.");
+        }
         const validationError = validateItemPayload(body);
         if (validationError) {
             return sendError(res, 400, validationError);
         }
 
-        const { name, category_id, quantity, notification_threshold } = body;
+        const { category_id, quantity, notification_threshold } = body;
         const result = await pool.query(
             "UPDATE items SET name = $1, category_id = $2, quantity = $3, notification_threshold = $4 WHERE id = $5 RETURNING *",
-            [name.trim(), category_id ?? null, quantity, notification_threshold, id]
+            [normalizedName, category_id ?? null, quantity, notification_threshold, id]
         );
         if (result.rows.length > 0) {
             sendJson(res, 200, result.rows[0]);
