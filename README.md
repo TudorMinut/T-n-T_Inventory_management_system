@@ -42,7 +42,6 @@ The project follows the original implementation specification: centralizing item
 ### Infrastructure
 
 - Docker
-- Docker Compose
 
 ## What the Project Currently Implements
 
@@ -58,7 +57,6 @@ The project follows the original implementation specification: centralizing item
 
 ## Important Notes
 
-- The backend does not use Express, even though the old README claimed it did.
 - The server starts a periodic job that checks stock levels every `STOCK_CHECK_INTERVAL_MS`.
 - Emails are sent only if SMTP environment variables are configured. Otherwise, notifications remain in-app only.
 - Exported statistics are table-based and use the items and categories currently stored in the database.
