@@ -1,4 +1,4 @@
-## T-n-T Inventory Management System
+# T-n-T Inventory Management System
 
 Web application for managing stocks of essential items, consumables, and spare parts used in a household, organization, or company.
 
