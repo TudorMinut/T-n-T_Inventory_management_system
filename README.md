@@ -483,11 +483,3 @@ Additional route exposed from the data module with the same purpose: PDF report.
 - The generated statistics documents are minimal and do not include charts.
 - The project does not include an automated test suite.
 
-## Possible Extensions
-
-- session-based or JWT-based authentication;
-- user roles and group-targeted notifications;
-- maintenance rules for equipment, not only stock thresholds;
-- dashboard with real charts;
-- stricter import validation;
-- filtering and search for items and notifications.
